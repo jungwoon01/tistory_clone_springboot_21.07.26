@@ -1,0 +1,76 @@
+<style>
+    a:link { text-decoration: none;}
+    a:visited { text-decoration: none;}
+
+    .kakao-login {
+        background-color: #FFEB34;
+        color: #3A1D1D;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .kakao-login:hover {
+        color: #3A1D1D;
+        text-decoration: none;
+    }
+
+    .naver-login {
+        background-color: #2DB400;
+        color: #FFFFFF;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .naver-login:hover {
+        color: #FFFFFF;
+        text-decoration: none;
+    }
+
+    .google-login {
+        background-color: #FFFFFF;
+        color: #000000;
+        border-radius: 5px;
+        text-decoration: none;
+        border: 1px solid #CCCCCC;
+    }
+    .google-login:hover {
+        color: #000000;
+        text-decoration: none;
+    }
+</style>
+
+{{>layout/header}}
+
+<!--헤더 시작-->
+<header>
+    <!--네비게이션 바-->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light" style="background-color: white;">
+        <div class="container">
+            <a class="navbar-brand" href="/"><img src="/images/tistory_icon_black.png" height="30" width="30"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+<!--헤더 끝-->
+
+<!--메인 시작-->
+<main>
+    <div style="position: absolute; top: 50%;left: 50%; transform: translate(-50%,-50%); text-align: center;">
+        <div style="margin-bottom: 80px;">
+            <img src="/images/TISTORY_logo.PNG" width="220px" height="42">
+        </div>
+        <div class="row">
+            <a href="/auth/login" class="kakao-login" style="padding: 20px 120px;"><img src="/images/kakao_talk_balloon.png">&nbsp;&nbsp;카카오계정 로그인</a>
+        </div>
+        <br>
+        <div class="row">
+            <a href="/auth/login" class="naver-login" style="padding: 20px 120px;"><img src="/images/naver_icon.png">&nbsp;&nbsp;네이버계정 로그인</a>
+        </div>
+        <br>
+        <div class="row">
+            <a href="/auth/login" class="google-login" style="padding: 20px 120px;"><img src="/images/google_icon.png">&nbsp;&nbsp;구글계정 로그인</a>
+        </div>
+    </div>
+</main>
+<!--메인 끝-->
+{{>layout/footer}}
