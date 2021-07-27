@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
+    // 유저인지 방문자인지 확인
     public boolean isUser(PrincipalDetails principalDetails) {
         return principalDetails.getUser().getRole().getKey().equals(Role.USER.getKey());
     }

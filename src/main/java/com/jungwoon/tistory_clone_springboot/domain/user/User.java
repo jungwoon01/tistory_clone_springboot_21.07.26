@@ -43,4 +43,9 @@ public class User {
         this.role = role;
         this.registrationId = registrationId;
     }
+
+    public void signUp(String nickname) {
+        this.nickname = nickname;
+        this.role = Role.USER;
+    }
 }
