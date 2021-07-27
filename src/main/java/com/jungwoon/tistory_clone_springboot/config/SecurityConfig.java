@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutSuccessUrl("/")
                 .and()
                 .oauth2Login()// oauth2 로그인 추가
-                .defaultSuccessUrl("/auth/role")
+                .defaultSuccessUrl("/auth/sign-up")
                 .userInfoEndpoint() // oauth2 로그인을 하면 최종응답으로 회원정보를 바로 받을 수 있다.
                 .userService(customOAuth2UserService); // oauth2 로그인 서비스 등록
     }
