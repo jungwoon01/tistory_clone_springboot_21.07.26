@@ -4,16 +4,18 @@ import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.domain.user.UserRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomValidationException;
-import com.jungwoon.tistory_clone_springboot.web.dto.CMResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpSession;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final HttpSession httpSession;
 
     // 닉네임 중복 체크 서비스
     @Transactional(readOnly = true)
@@ -31,10 +33,14 @@ public class UserService {
             throw new CustomValidationException("중복된 닉네임입니다.", null);
         }
 
+        // 현재 유저 select
         User userEntity = userRepository.findById(user.getId()).orElseThrow(() -> {
             throw new RuntimeException("UserService.signUp() : 존재하지않는 유저 입니다.");
         });
+
         userEntity.signUp(nickname); // 닉네임 수정
+        principalDetails.setUser(userEntity, httpSession);
+
         return userEntity;
     }
 }

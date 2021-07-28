@@ -2,8 +2,10 @@ package com.jungwoon.tistory_clone_springboot.service;
 
 import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
 import com.jungwoon.tistory_clone_springboot.domain.user.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class AuthService {
 

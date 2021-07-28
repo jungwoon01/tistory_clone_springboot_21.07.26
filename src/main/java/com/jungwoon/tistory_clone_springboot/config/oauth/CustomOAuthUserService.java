@@ -11,13 +11,16 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
 public class CustomOAuthUserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final HttpSession httpSession;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -30,10 +33,7 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
         User userEntity = userRepository.findByAttributesId(attributes.getAttributesId()); // attributes 정보로 유저 찾기
 
         // 처음 로그인을 시도하는 유저
-        if(userEntity == null) {
-            return new PrincipalDetails(userRepository.save(attributes.toUserEntity()), oAuthAttr);
-        }
+        return new PrincipalDetails(Objects.requireNonNullElseGet(userEntity, () -> userRepository.save(attributes.toUserEntity())), oAuthAttr, httpSession);
 
-        return new PrincipalDetails(userEntity, oAuthAttr);
     }
 }

@@ -23,7 +23,6 @@ public class UserController {
                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         User userEntity = userService.signUp(signUpRequestDto.getNickname(), principalDetails);
-        principalDetails.setUser(userEntity);
 
         return "redirect:/";
     }
