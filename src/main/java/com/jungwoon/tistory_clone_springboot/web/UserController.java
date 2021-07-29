@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -25,5 +26,10 @@ public class UserController {
         User userEntity = userService.signUp(signUpRequestDto.getNickname(), principalDetails);
 
         return "redirect:/";
+    }
+
+    @GetMapping("/user")
+    public String user() {
+        return "user-info";
     }
 }

@@ -1,0 +1,77 @@
+<style>
+    .custom-btn {
+        display: inline-block;
+        min-width: 120px;
+        height: 40px;
+        padding: 0 23px;
+        border-radius: 20px;
+        font-size: 13px;
+        line-height: 38px;
+        box-sizing: border-box;
+        text-align: center;
+        -webkit-transition: background-color .1s linear,border-color .1s linear;
+        -moz-transition: background-color .1s linear,border-color .1s linear;
+        transition: background-color .1s linear,border-color .1s linear;
+        color: #fff;
+        border: 1px solid #000;
+        background-color: #000;
+    }
+
+    .custom-btn:hover {
+        background-color: #da3f3a;
+        border: 1px solid #da3f3a;
+    }
+
+    .logout:hover {
+        color: #1e2125;
+        background-color: #e9ecef;
+    }
+</style>
+
+<!--헤더 시작-->
+<header>
+    <!--네비게이션 바-->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light" style="background-color: white; border-bottom: 1px solid #CCCCCC;">
+        <div class="container">
+            <a class="navbar-brand" href="/"><img src="/images/tistory_icon_black.png" height="30" width="30"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item" style="width: 50px;">
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#" style="font-weight: 900; font-size: 12pt;">피드</a>
+                    </li>
+                    <li class="nav-item" style="width: 30px;">
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" style="font-weight: 900; font-size: 12pt;">스토리</a>
+                    </li>
+                </ul>
+                {{^principal}}
+                    <button class="custom-btn" onclick="location.href='/auth/login'">시작하기</button>
+                {{/principal}}
+                {{#principal}}
+                    <div class="dropdown">
+                        <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="#" onerror="this.src='/images/kakao_character.png'" width="40" height="40" style="border-radius: 20px;">
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/user">{{principal.user.nickname}}</a></li>
+                            <li><p class="dropdown-header" style="font-size: 9pt;">{{principal.user.email}}</p></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header" style="font-size: 9pt;">운영중인 블로그</h6></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-header logout" href="/logout" style="font-size: 9pt; text-decoration: none;">로그아웃</a></li>
+                        </ul>
+                    </div>
+                {{/principal}}
+            </div>
+        </div>
+    </nav>
+</header>
+<!--헤더 끝-->
