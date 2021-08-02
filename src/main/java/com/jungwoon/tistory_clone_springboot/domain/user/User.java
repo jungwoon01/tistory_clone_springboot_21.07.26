@@ -1,8 +1,11 @@
 package com.jungwoon.tistory_clone_springboot.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Builder
 @ToString
@@ -34,6 +37,10 @@ public class User {
 
     // 닉네임
     private String nickname;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"user"})
+    private List<Blog> blogs;
 
     @Builder
     public User(String attributesId, String email, String nickname, Role role, String registrationId) {

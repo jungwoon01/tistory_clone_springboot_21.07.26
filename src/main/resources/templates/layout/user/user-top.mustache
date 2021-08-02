@@ -3,7 +3,6 @@
 
 <style>
     body {
-        padding-top: 84px;
         background-color: #f3f5f7;
     }
     .info {
@@ -38,6 +37,7 @@
     .title-dec:hover {
         background-color: #E3E5E7;
     }
+
 </style>
 
 <div class="container">
@@ -45,11 +45,14 @@
         <!--사이드 메뉴 시작-->
         <div class="col-md-3" style="width: 250px;">
             <div style="margin: 0 10px;">
+                <!--프로필 표시-->
                 <div class="row justify-content-center align-content-center" style="width: 100%; height: 230px; background-color: white; border: 1px solid #DDDDDD;">
                     <img src="#" onerror="this.src='/images/kakao_character.png'" style="border-radius: 50%; width: 124px; height: 100px;">
                     <p class="info" style="margin-top: 10px;">닉네임</p>
                     <p class="info" style="font-size: 9pt; color: #5a5a5a">이메일</p>
                 </div>
+                <!--프로필 표시 끝-->
+                <!--사이드 메뉴-->
                 <div class="row" style="width: 100%; background-color: white; border: 1px solid #DDDDDD; margin-top: 6px;">
                     <a class="orange side-menu-list title-dec" href="/user/blog">
                         <div class="row">
@@ -81,29 +84,10 @@
                         </a>
                     </div>
                 </div>
+                <!--사이드 메뉴 끝-->
             </div>
         </div>
         <!--사이드 메뉴 끝-->
         <!--content 시작-->
         <div class="col-md-9">
             <div style="margin: 0 10px;">
-                <div class="row">
-                    <h5>운영 중인 블로그</h5>
-                </div>
-                <div class="row" style="width: 100%; height: 200px; background-color: white; border: 1px solid #DDDDDD;">
-
-                </div>
-                <br>
-                <div class="row">
-                    <h5>운영·개설 현황</h5>
-                </div>
-                <div class="row" style="width: 100%; height: 200px; background-color: white; border: 1px solid #DDDDDD;">
-
-                </div>
-            </div>
-        </div>
-        <!--content 끝-->
-    </div>
-</div>
-
-{{>layout/footer}}
