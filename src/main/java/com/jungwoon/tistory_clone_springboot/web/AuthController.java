@@ -22,12 +22,12 @@ public class AuthController {
             return "redirect:/";
 
         // 방문자일 때
-        return "sign-up";
+        return "auth/sign-up";
     }
 
     // 로그인 페이지
     @GetMapping("/auth/login")
     public String login() {
-        return "login";
+        return "auth/login";
     }
 }

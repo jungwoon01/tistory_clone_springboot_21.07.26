@@ -1,0 +1,146 @@
+{{>layout/header}}
+{{>layout/header-nav}}
+
+<style>
+    body {
+        background-color: #f3f5f7;
+    }
+    a {
+        text-decoration: none;
+    }
+    .info {
+        padding: 0;
+        margin: 0;
+    }
+    .side-menu-list {
+        padding: 10px 15px;
+        border-bottom: #f3f5f7 solid 1px;
+    }
+    .side-menu-list-last {
+        padding: 10px 15px;
+    }
+    .orange {
+        color: #FF5010;
+        text-decoration: none;
+    }
+    .orange:hover {
+        color: #FF5010;
+    }
+    .side-menu-title {
+        font-size: 12pt;
+    }
+    .side-menu-content {
+        padding-top: 2px;
+        padding-left: 1px;
+        font-size: 10pt;
+        color: #5a5a5a;
+    }
+    .title-dec {
+        text-decoration: none;
+    }
+    .title-dec:hover {
+        background-color: #E3E5E7;
+    }
+    .btn-write {
+        color: white;
+        background-color: #2c3034;
+        font-size: 10pt;
+    }
+    .btn-write:hover {
+        color: white;
+        background-color: #4f5050;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center" style="margin: 48px 54px;">
+        <!--사이드 메뉴 시작-->
+        <div class="col-md-3" style="width: 250px;">
+            <div style="margin: 0 10px;">
+                <!--블로그 프로필 표시-->
+                <div class="row" style="width: 100%; background-color: white; border: 1px solid #DDDDDD;">
+                    <div class="col-12" style="border-bottom: 1px solid #DDDDDD; margin: 0; padding: 0;">
+                        <img src="#" onerror="this.src='/images/tistory_blog_img.jfif'" height="204">
+                    </div>
+                    <div class="col-12" style="padding: 12px 15px; margin: 0;">
+                        <p class="info">블로그 이름</p>
+                        <p class="info" style="font-size: 9pt; color: #5a5a5a">블로그 주소</p>
+                    </div>
+                </div>
+                <!--블로그 프로필 표시 끝-->
+                <!--글 쓰기 버튼-->
+                <a class="row btn-write justify-content-center" href="/blog/manage/newpost" style="margin-top: 6px; width: 100%; padding: 12px 8px;">
+                    <div class="col-12">
+                        글 쓰기
+                    </div>
+                </a>
+                <!--글 쓰기 버튼 끝-->
+                <!--사이드 메뉴-->
+                <div class="row" style="width: 100%; background-color: white; border: 1px solid #DDDDDD; margin-top: 6px;">
+                    <a class="orange side-menu-list title-dec" href="/user/blog">
+                        <div class="row">
+                            <div class="col-2 side-menu-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+                                    <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/>
+                                </svg>
+                            </div>
+                            <div class="col-8 side-menu-title">
+                                블로그관리 홈
+                            </div>
+                        </div>
+                    </a>
+                    <div class="row side-menu-list">
+                        <div class="row">
+                            <div class="col-2 side-menu-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
+                                    <path d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z"/>
+                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+                                </svg>
+                            </div>
+                            <div class="col-10 side-menu-title">콘텐츠</div>
+                        </div>
+                        <a href="#" >
+                            <div class="row side-menu-content">
+                                <div class="col-2"></div>
+                                <div class="col-10">글 관리</div>
+                            </div>
+                        </a>
+                        <a href="#" >
+                            <div class="row side-menu-content">
+                                <div class="col-2"></div>
+                                <div class="col-10">카테고리 관리</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="row side-menu-list-last">
+                        <div class="row">
+                            <div class="col-2 side-menu-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-dots" viewBox="0 0 16 16">
+                                    <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                    <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9.06 9.06 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.437 10.437 0 0 1-.524 2.318l-.003.011a10.722 10.722 0 0 1-.244.637c-.079.186.074.394.273.362a21.673 21.673 0 0 0 .693-.125zm.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6c0 3.193-3.004 6-7 6a8.06 8.06 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a10.97 10.97 0 0 0 .398-2z"/>
+                                </svg>
+                            </div>
+                            <div class="col-10 side-menu-title">댓글·방명록</div>
+                        </div>
+                        <a href="#" >
+                            <div class="row side-menu-content">
+                                <div class="col-2"></div>
+                                <div class="col-10">댓글 관리</div>
+                            </div>
+                        </a>
+                        <a href="#" >
+                            <div class="row side-menu-content">
+                                <div class="col-2"></div>
+                                <div class="col-10">방명록 관리</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <!--사이드 메뉴 끝-->
+            </div>
+        </div>
+        <!--사이드 메뉴 끝-->
+        <!--content 시작-->
+        <div class="col-md-9">
+            <div style="margin: 0 10px;">

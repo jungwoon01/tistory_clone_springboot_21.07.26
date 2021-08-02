@@ -33,6 +33,7 @@ public class UserController {
         return "redirect:/";
     }
 
+    // 블로그 목록 페이지
     @GetMapping("/user/blog")
     public String user(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
@@ -40,11 +41,12 @@ public class UserController {
 
         model.addAttribute("blogs", blogs);
 
-        return "user-blog";
+        return "user/user-blog";
     }
 
+    // 블로그 생성 페이지
     @GetMapping("/user/blog/make")
     public String make() {
-        return "user-blog-make";
+        return "user/user-blog-make";
     }
 }

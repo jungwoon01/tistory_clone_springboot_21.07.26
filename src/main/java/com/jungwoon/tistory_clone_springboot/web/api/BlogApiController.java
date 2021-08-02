@@ -8,18 +8,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class PostApiController {
+public class BlogApiController {
 
     private final PostService postService;
 
-    @PostMapping("/blog/manage/newpost")
-    public ResponseEntity<?> writePost(@RequestBody PostCreateRequestDto dto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    @PostMapping("/{url}/manage/newpost")
+    public ResponseEntity<?> writePost(@RequestBody PostCreateRequestDto dto, @AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable String url) {
         postService.write(dto, principalDetails);
         return new ResponseEntity<>(new CMResponseDto<>(1, "", null), HttpStatus.CREATED);
     }
