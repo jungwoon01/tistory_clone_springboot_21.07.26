@@ -1,11 +1,9 @@
 package com.jungwoon.tistory_clone_springboot.web;
 
 import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
-import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
-import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.service.BlogService;
 import com.jungwoon.tistory_clone_springboot.service.UserService;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogResponseDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.manage.BlogListResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.user.SignUpRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,7 +36,7 @@ public class UserController {
     @GetMapping("/user/blog")
     public String user(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        List<BlogResponseDto> blogs = blogService.blogList(principalDetails.getUser().getId());
+        List<BlogListResponseDto> blogs = blogService.blogList(principalDetails.getUser().getId());
 
         model.addAttribute("blogs", blogs);
 

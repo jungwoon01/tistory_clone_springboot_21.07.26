@@ -1,4 +1,4 @@
-package com.jungwoon.tistory_clone_springboot.web.dto.blog;
+package com.jungwoon.tistory_clone_springboot.web.dto.manage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,4 +8,6 @@ import lombok.Data;
 public class BlogCreateRequestDto {
     private String name;
     private String url;
+    private String security;
+    private Long blogId;
 }

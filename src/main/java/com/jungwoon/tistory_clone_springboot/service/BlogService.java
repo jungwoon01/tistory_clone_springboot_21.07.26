@@ -4,8 +4,8 @@ import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.blog.BlogRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomValidationException;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogCreateRequestDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogResponseDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.manage.BlogCreateRequestDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.manage.BlogListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,13 +35,13 @@ public class BlogService {
 
     // 블로그 userId로 목록 가져오기
     @Transactional(readOnly = true)
-    public List<BlogResponseDto> blogList(Long userId) {
-        List<BlogResponseDto> respBlogs = new ArrayList<>();
+    public List<BlogListResponseDto> blogList(Long userId) {
+        List<BlogListResponseDto> respBlogs = new ArrayList<>();
 
         List<Blog> blogEntities = blogRepository.getByUserId(userId);
 
         blogEntities.forEach(entity -> {
-            respBlogs.add(BlogResponseDto.builder()
+            respBlogs.add(BlogListResponseDto.builder()
                     .name(entity.getName())
                     .url(entity.getUrl())
                     .build());
