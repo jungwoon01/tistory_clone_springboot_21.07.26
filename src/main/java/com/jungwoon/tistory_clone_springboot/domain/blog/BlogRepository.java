@@ -21,4 +21,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     // 블로그 주소로 불러오기
     Optional<Blog> findByUrl(String url);
+
+    Integer countBlogByUserId(Long userId);
 }

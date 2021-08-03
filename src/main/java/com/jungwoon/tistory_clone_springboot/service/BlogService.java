@@ -71,4 +71,18 @@ public class BlogService {
 
         return new BlogManageRespDto(blogEntity);
     }
+
+    @Transactional(readOnly = true)
+    public Integer count(PrincipalDetails principalDetails) {
+        Integer count;
+        try {
+            count = blogRepository.countBlogByUserId(principalDetails.getUser().getId());
+        } catch (Exception e) {
+            throw new CustomException("로그인 후 이용해주세요.");
+        }
+
+        count = 5 - count;
+
+        return count;
+    }
 }

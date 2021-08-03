@@ -37,9 +37,9 @@ public class UserController {
     @GetMapping("/user/blog")
     public String user(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        List<BlogListResponseDto> blogs = blogService.blogList(principalDetails.getUser().getId());
+        Integer count = blogService.count(principalDetails);
 
-        model.addAttribute("blogs", blogs);
+        model.addAttribute("count", count);
 
         return "user/user-blog";
     }
