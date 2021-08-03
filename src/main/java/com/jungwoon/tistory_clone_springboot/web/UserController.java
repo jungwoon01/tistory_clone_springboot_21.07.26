@@ -3,7 +3,7 @@ package com.jungwoon.tistory_clone_springboot.web;
 import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
 import com.jungwoon.tistory_clone_springboot.service.BlogService;
 import com.jungwoon.tistory_clone_springboot.service.UserService;
-import com.jungwoon.tistory_clone_springboot.web.dto.manage.BlogListResponseDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.user.SignUpRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

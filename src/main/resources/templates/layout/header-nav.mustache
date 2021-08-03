@@ -67,7 +67,9 @@
                             <li><p class="dropdown-header" style="font-size: 9pt;">{{principal.user.email}}</p></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header" style="font-size: 9pt;">운영중인 블로그</h6></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            {{#principal.user.blogs}}
+                            <li><a class="dropdown-item" href="/{{url}}">{{name}}</a></li>
+                            {{/principal.user.blogs}}
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-header logout" href="/logout" style="font-size: 9pt; text-decoration: none;">로그아웃</a></li>
                         </ul>

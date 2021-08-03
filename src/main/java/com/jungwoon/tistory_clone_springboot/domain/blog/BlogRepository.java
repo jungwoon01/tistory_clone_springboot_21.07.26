@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BlogRepository extends JpaRepository<Blog, Long> {
     boolean existsByName(String name);
@@ -17,4 +18,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     // 블로그 주인 id로 블로그 불러오기
     List<Blog> getByUserId(Long userId);
+
+    // 블로그 주소로 불러오기
+    Optional<Blog> findByUrl(String url);
 }

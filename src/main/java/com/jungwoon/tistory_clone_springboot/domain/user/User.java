@@ -38,7 +38,7 @@ public class User {
     // 닉네임
     private String nickname;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"user"})
     private List<Blog> blogs;
 

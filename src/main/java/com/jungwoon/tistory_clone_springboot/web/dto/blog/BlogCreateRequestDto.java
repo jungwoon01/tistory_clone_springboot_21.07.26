@@ -1,4 +1,4 @@
-package com.jungwoon.tistory_clone_springboot.web.dto.manage;
+package com.jungwoon.tistory_clone_springboot.web.dto.blog;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
