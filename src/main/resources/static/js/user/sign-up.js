@@ -1,6 +1,11 @@
 let checkNicknameId = null;
 // input keyup 이벤트 리스너
-window.addEventListener("keyup", () => {
+
+window.addEventListener("keyup", (key) => {
+
+    if(key.code === "Enter") {
+        return false;
+    }
 
     let nickname = $('#nickname').val();
 
@@ -49,8 +54,9 @@ function signUp() {
     let notiText = $("#nickname-noti").text();
 
     if(notiText !== "사용 가능한 닉네임입니다") {
-        return;
+        return false;
     }
 
-    $('#sign-up').submit();
+    return true;
 }
+

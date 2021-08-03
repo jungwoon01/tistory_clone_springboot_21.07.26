@@ -48,8 +48,8 @@ public class OAuthAttributes {
 
     // 네이버 attributes 리턴
     private static OAuthAttributes ofNaver(String registrationId, Map<String, Object> attributes) {
-        String oAuthAttributesId = (String) attributes.get("id");
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+        String oAuthAttributesId = (String) response.get("id");
 
         return OAuthAttributes.builder()
                 .attributesId(registrationId + "_" + oAuthAttributesId)
