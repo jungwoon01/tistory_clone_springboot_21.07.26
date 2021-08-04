@@ -1,0 +1,361 @@
+{{>layout/manage/manage-top}}
+
+<style>
+    .category-title-border {
+        border: 1px solid #DDDDDD;
+    }
+    .category-title-border:hover {
+        border: 1px solid #BBBBBB;
+    }
+    .category-border{
+        border: 1px solid #DDDDDD;
+        border-top: 1px solid white;
+    }
+    .category-border:hover {
+        border: 1px solid #BBBBBB;
+        border-top: 1px solid #DDDDDD;
+    }
+    .btn-category {
+        background-color: white;
+        font-size: 9pt;
+        border: 1px solid #636464;
+        padding: 2px 6px;
+        margin-left: 10px;
+        visibility: hidden;
+    }
+    .btn-category:hover {
+        border:1px solid #1c1f23;
+        background-color: #636464;
+        color: white;
+    }
+    .category-add:hover {
+        color: black;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <h5>카테고리 관리</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12" style="padding: 20px; background-color: white; border: 1px solid #DDDDDD;">
+        <!--카테고리 설명 글-->
+        <div class="row">
+            <div class="col-12">
+                <p style="color: #4f5050; font-size: 10pt;">카테고리를 수정하고 순서를 변경할 수 있습니다.</p>
+            </div>
+        </div>
+        <!--카테고리 설명 글 끝-->
+
+        <div class="row">
+            <div class="col-12">
+                <!--카테고리 리스트-->
+                <div style="padding: 8px; background-color: rgb(231, 237, 243);">
+                    <div>
+                        <div id="category-title" class="category-title-border" style="background-color: white;">
+                            <div style="padding: 12px;">
+                                <span style="padding: 2px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-justify" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                                    </svg>
+                                </span>
+                                <span>Category</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="category-list">
+
+                    </div>
+                    <div>
+                        <div id="category-add" class="category-add category-title-border" style="margin-top: 10px;" onclick="controlCategoryInput()">
+                            <div style="padding: 12px;">
+                                <span style="margin: 0 14px;" id="category-add-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                                        <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
+                                    </svg>
+                                </span>
+                                <span id="category-add-text">카테고리 추가</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let itemList = new List();
+    let nameList = new List();
+    let inputFlag = false; // 카테고리 인풋이 보이는지
+
+    // 카테고리 input 추가/제거
+    function controlCategoryInput() {
+        if(inputFlag) {
+            itemList.remove(itemList.get(itemList.length() - 1));
+            categoryCancelTextChange();
+            inputFlag = false;
+        } else {
+            itemList.append(categoryInput());
+            categoryAddTextChange();
+            inputFlag = true;
+        }
+
+        categoryListReset();
+        btnDisabledControl();
+    }
+
+    // 추가 버튼 제어
+    function btnDisabledControl() {
+        $('#category-input').on("keyup", () => {
+            let categoryVal = $('#category-input').val();
+            if(categoryVal != "" && categoryVal.charAt(0) != " ") {
+                $('#btn-category-cfm').attr("disabled", false);
+            } else {
+                $('#btn-category-cfm').attr("disabled", true);
+            }
+        });
+    }
+
+    // 추가 버튼
+    function addCategory() {
+        let categoryVal = $('#category-input').val();
+
+        itemList.remove(itemList.get(itemList.length() - 1)); // input 제거
+        categoryCancelTextChange(); // 접기 텍스트 -> 카테고리 추가 변경
+        inputFlag = false; // input 플레그 false
+        itemList.append(categoryListItem(categoryVal, itemList.length())); // category 리스트에 item 추가
+        nameList.append(categoryVal); // category 리스트에 category 이름 추가
+        categoryListReset(); // 카테고리 리스트 다시 그리기
+        addCtgMouseEvent() // 마우스 올림 내림 이벤트 추가
+    }
+
+    // 카테고리 리스트 리셋
+    function categoryListReset() {
+        $("#category-list").empty();
+        itemList.dataStore.forEach((item) => {
+            $("#category-list").append(item);
+        });
+    }
+
+    // 카테고리 인풋 폼
+    function categoryInput() {
+        let input = `<div class="category-border" style="padding-left: 30px; background-color: #f3f5f7;">
+                        <div style="background-color: white; border-left: 1px solid #DDDDDD;">
+                            <div style="padding: 8px;">
+                                <div class="input-group">
+                                    <input type="text" id="category-input" class="form-control" placeholder="카테고리 이름" aria-label="Recipient's username with two button addons" maxlength="30">
+                                    <button class="btn btn-outline-secondary" id="btn-category-csl" onclick="controlCategoryInput()" type="button">취소</button>
+                                    <button class="btn btn-outline-secondary" id="btn-category-cfm" onclick="addCategory()" type="button" disabled>추가</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+        return input;
+    }
+
+    // 카테고리 리스트 아이템 폼
+    function categoryListItem(categoryVal, priority) {
+        let item = `<div id="category-item-`;
+        item += priority;
+        item += `" class="category-border" style="padding-left: 30px; background-color: #f3f5f7;">
+                        <div style="background-color: white; border-left: 1px solid #DDDDDD;">
+                            <div style="padding: 12px;">
+                                <span style="padding: 2px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-justify" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                                </svg></span>
+                                <span>`
+        item += categoryVal;
+                item += `</span>
+                                <span>
+                                    <button id="category-item-btn-drop-`;item += priority;item += `" class="btn-category float-end" onclick="dropCtgItem(this.id)">삭제</button>
+                                    <button id="category-item-btn-down-`;item += priority;item += `" class="btn-category float-end" onclick="downCtgItem(this.id)">▽</button>
+                                    <button id="category-item-btn-up-`;item += priority;item += `" class="btn-category float-end" onclick="upCtgItem(this.id)">△</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>`;
+        return item;
+    }
+
+    // 삭제 버튼
+    function dropCtgItem(id) {
+
+    }
+
+    // 카테고리 추가 텍스트 css 변경
+    function categoryAddTextChange() {
+        $('#category-add-icon').html(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                <path d="M0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1z"/>
+            </svg>`
+        );
+        $('#category-add-text').text("접기");
+    }
+
+    // 카테고리 추가 텍스트 css 변경
+    function categoryCancelTextChange() {
+        $('#category-add-icon').html(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
+            </svg>`
+        );
+        $('#category-add-text').text("카테고리 추가");
+    }
+
+    // 카테고리 아이템 마우스 올림/내림 이벤트
+    function itemMouseControl(id){
+        $('#category-item-'+id).mouseover(() => {
+            $("#category-item-btn-drop-"+id).css("visibility", "visible");
+            $("#category-item-btn-down-"+id).css("visibility", "visible");
+            $("#category-item-btn-up-"+id).css("visibility", "visible");
+        });
+        $('#category-item-'+id).mouseleave(() => {
+            $("#category-item-btn-drop-"+id).css("visibility", "hidden");
+            $("#category-item-btn-down-"+id).css("visibility", "hidden");
+            $("#category-item-btn-up-"+id).css("visibility", "hidden");
+        });
+    }
+
+    // 카테고리 아이템에 마우스 올림/내림 이벤트 추가
+    function addCtgMouseEvent() {
+        nameList.dataStore.forEach((name) => {
+            itemMouseControl(nameList.find(name));
+        });
+    }
+
+    function List() {
+        this.listSize = 0;
+        this.pos = 0;
+        this.dataStore = [];
+        this.clear = clear;
+        this.find = find;
+        this.toString = toString;
+        this.insert = insert;
+        this.append = append;
+        this.remove = remove;
+        this.front = front;
+        this.end = end;
+        this.prev = prev;
+        this.next = next;
+        this.length = length;
+        this.currPos = currPos;
+        this.moveTo = moveTo;
+        this.getElement = getElement;
+        this.length = length;
+        this.contains = contains;
+        this.get = get;
+    }
+
+    // 배열 뒤에 요소 추가하는 함수
+    function append(element) {
+        this.dataStore[this.listSize++] = element;
+    }
+
+    // 요소의 index를 구하는 함수 (존재하지 않는 경우 -1 반환)
+    function find(element) {
+        for(var i=0; i<this.dataStore.length; i++) {
+            if(this.dataStore[i] == element) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // 요소를 삭제하고 그 결과를 boolean 으로 반환하는 함수
+    function remove(element){
+        var foundAt = this.find(element);
+
+        if(foundAt > -1) {
+            this.dataStore.splice(foundAt, 1);
+            --this.listSize;
+            return true;
+        }
+        return false;
+    }
+
+    // 리스트의 길이를 반환하는 함수
+    function length(){
+        return this.listSize;
+    }
+
+    // 리스트 요소를 확인하는 함수
+    function toString() {
+        return "["+this.dataStore+"]";
+    }
+
+    // 요소를 원하는 위치에 추가하고 그 결과를 boolean 으로 반환하는 함수
+    function insert(element, after){
+        var insertPos = this.find(after);
+        if(insertPos > -1) {
+            this.dataStore.splice(insertPos+1, 0, element);
+            ++this.listSize;
+            return true;
+        }
+        return false;
+    }
+
+    // 리스트의 모든 요소를 삭제하는 함수
+    function clear() {
+        delete this.dataStore;
+        this.dataStore.length = 0;
+        this.listSize = 0;
+    }
+
+    // 리스트에 특정 요소가 있는지 그 결과를 boolean 으로 반환하는 함수
+    function contains(element) {
+        for(var i=0;i<this.dataStore.length;i++) {
+            if(this.dataStore[i] == element) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 리스트 탐색 관련 기능을 위한 pos 가 맨 앞을 보게 한다.
+    function front() {
+        this.pos = 0;
+    }
+
+    // 리스트 탐색 관련 기능을 위한 pos 가 맨 뒤를 보게 한다.
+    function end() {
+        this.pos = this.listSize-1;
+    }
+
+    // 리스트 탐색 관련 기능을 위한 pos 가 이전 위치를 보게 한다.
+    function prev() {
+        if(this.pos > 0)
+            --this.pos;
+    }
+
+    // 리스트 탐색 관련 기능을 위한 pos 가 다음 위치를 보게 한다.
+    function next() {
+        if(this.pos < this.listSize-1) {
+            ++this.pos;
+        }
+    }
+
+    // 리스트 탐색 관련 기능을 위한 pos 가 보고 있는 현재 위치를 반환 한다.
+    function currPos() {
+        return this.pos;
+    }
+
+    // 리스트 탐색 관련 기능을 위한 pos 가 특정 위치를 보게 한다.
+    function moveTo(position) {
+        this.pos = position;
+    }
+
+    // pos 가 보고 있는 현재 위치의 값을 반환 한다.
+    function getElement(){
+        return this.dataStore[this.pos];
+    }
+
+    // index 로 요소를 반환하는 함수
+    function get(position){
+        return this.dataStore[position];
+    }
+
+</script>
+
+{{>layout/manage/manage-bottom}}
