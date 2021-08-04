@@ -19,7 +19,6 @@ import javax.servlet.http.HttpSession;
 public class BlogController {
 
     private final BlogService blogService;
-    private final HttpSession httpSession;
 
     // 블로그 관리 페이지
     @GetMapping("/{url}/manage")
@@ -32,17 +31,14 @@ public class BlogController {
         return "blog/manage";
     }
 
-    @PostMapping("/{url}/manage/create")
-    public String createBlog(BlogCreateRequestDto dto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        blogService.create(dto, principalDetails);
-        httpSession.setAttribute("pricipal", principalDetails); // 블로그 추가 세션 정보 수정
-        return "redirect:/user/blog";
-    }
-
-
     // 글쓰기 페이지
     @GetMapping("/{url}/manage/newpost")
     public String newPost() {
         return "blog/manage-newpost";
+    }
+
+    @GetMapping("/{url}/manage/category")
+    public String manageCategory(@PathVariable String url) {
+        return null;
     }
 }

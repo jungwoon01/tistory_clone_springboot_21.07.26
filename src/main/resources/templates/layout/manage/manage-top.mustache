@@ -50,6 +50,12 @@
         color: white;
         background-color: #4f5050;
     }
+    .side-menu-text {
+        color: #5a5a5a;
+    }
+    .side-menu-text:hover {
+        color: #FF5010;
+    }
 </style>
 
 <div class="container">
@@ -100,18 +106,16 @@
                             </div>
                             <div class="col-10 side-menu-title">콘텐츠</div>
                         </div>
-                        <a href="#" >
-                            <div class="row side-menu-content">
-                                <div class="col-2"></div>
-                                <div class="col-10">글 관리</div>
+                        <div class="row side-menu-content">
+                            <div class="col-2"></div>
+                            <div class="col-10"><a class="side-menu-text">글 관리</a></div>
+                        </div>
+                        <div class="row side-menu-content">
+                            <div class="col-2"></div>
+                            <div class="col-10">
+                                <a class="side-menu-text" href="/{{blog.url}}/manage/category">카테고리 관리</a>
                             </div>
-                        </a>
-                        <a href="#" >
-                            <div class="row side-menu-content">
-                                <div class="col-2"></div>
-                                <div class="col-10">카테고리 관리</div>
-                            </div>
-                        </a>
+                        </div>
                     </div>
                     <div class="row side-menu-list-last">
                         <div class="row">
@@ -123,18 +127,14 @@
                             </div>
                             <div class="col-10 side-menu-title">댓글·방명록</div>
                         </div>
-                        <a href="#" >
-                            <div class="row side-menu-content">
-                                <div class="col-2"></div>
-                                <div class="col-10">댓글 관리</div>
-                            </div>
-                        </a>
-                        <a href="#" >
-                            <div class="row side-menu-content">
-                                <div class="col-2"></div>
-                                <div class="col-10">방명록 관리</div>
-                            </div>
-                        </a>
+                        <div class="row side-menu-content">
+                            <div class="col-2"></div>
+                            <div class="col-10"><a class="side-menu-text">댓글 관리</a></div>
+                        </div>
+                        <div class="row side-menu-content">
+                            <div class="col-2"></div>
+                            <div class="col-10"><a class="side-menu-text">방명록 관리</a></div>
+                        </div>
                     </div>
                 </div>
                 <!--사이드 메뉴 끝-->

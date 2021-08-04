@@ -20,13 +20,13 @@ public class BlogApiController {
 
     private final PostService postService;
     private final BlogService blogService;
-
+    // post 작성
     @PostMapping("/{url}/manage/newpost")
     public ResponseEntity<?> writePost(@RequestBody PostCreateRequestDto dto, @AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable String url) {
         postService.write(dto, principalDetails);
         return new ResponseEntity<>(new CMResponseDto<>(1, "글 작성", null), HttpStatus.CREATED);
     }
-
+    // 블로그 리스트
     @GetMapping("/blog/api/blogs")
     public ResponseEntity<?> blogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         // 로그인 확인

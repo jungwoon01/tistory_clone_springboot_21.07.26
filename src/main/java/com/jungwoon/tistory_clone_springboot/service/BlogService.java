@@ -10,6 +10,7 @@ import com.jungwoon.tistory_clone_springboot.handler.exception.CustomValidationE
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogCreateRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogManageRespDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.user.UserBlogCountDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +32,14 @@ public class BlogService {
         String blogName = requestDto.getName();
         String blogUrl = requestDto.getUrl() + ".tistory.com";
 
+        // 중복 유효성 검사
         if( blogRepository.existsByName(blogName) || blogRepository.existsByUrl(blogUrl)){
             throw new CustomValidationException("블로그 이름이나 url이 중복됩니다.", null);
+        }
+
+        // 블로그 수 검사(5개 이하)
+        if(isCreateBlog(principalDetails.getUser().getId())) {
+            throw new CustomException("개설 가능한 블로그 수를 초과했습니다.");
         }
 
         blogRepository.mSave(blogName, blogUrl, principalDetails.getUser().getId());
@@ -72,17 +79,25 @@ public class BlogService {
         return new BlogManageRespDto(blogEntity);
     }
 
+    // 블로그 countDto
     @Transactional(readOnly = true)
-    public Integer count(PrincipalDetails principalDetails) {
+    public UserBlogCountDto count(PrincipalDetails principalDetails) {
+        UserBlogCountDto countDto = new UserBlogCountDto();
         Integer count;
-        try {
-            count = blogRepository.countBlogByUserId(principalDetails.getUser().getId());
-        } catch (Exception e) {
-            throw new CustomException("로그인 후 이용해주세요.");
-        }
+
+        count = blogRepository.countBlogByUserId(principalDetails.getUser().getId());
 
         count = 5 - count;
+        if(count > 0) countDto.setCanCreate(true);
+        countDto.setCount(count);
 
-        return count;
+        return countDto;
+    }
+
+    // 블로그 만들 수 있는지
+    @Transactional(readOnly = true)
+    public boolean isCreateBlog(Long userId) {
+        int count = blogRepository.countBlogByUserId(userId);
+        return count <= 5;
     }
 }
