@@ -1,5 +1,6 @@
 package com.jungwoon.tistory_clone_springboot.domain.blog;
 
+import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +22,9 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     // 블로그 주소로 불러오기
     Optional<Blog> findByUrl(String url);
+
+    // 블로그 주소와 유저 id로 불러오기
+    Optional<Blog> findByUrlAndUser(String url, User user);
 
     Integer countBlogByUserId(Long userId);
 }

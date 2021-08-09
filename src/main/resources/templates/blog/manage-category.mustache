@@ -31,6 +31,14 @@
     .category-add:hover {
         color: black;
     }
+    .btn-category-disabled {
+        background-color: white;
+        font-size: 9pt;
+        border: 1px solid #E3E5E7;
+        padding: 2px 6px;
+        margin-left: 10px;
+        visibility: hidden;
+    }
 </style>
 
 <div class="row">
@@ -83,30 +91,135 @@
             </div>
         </div>
     </div>
+    <div class="col-12" style="padding: 20px; background-color: white; border: 1px solid #DDDDDD; border-top: none;">
+        <button id="btn-category-save" class="btn btn-dark float-end" style="font-size: 11pt; border-radius: 0;" onclick="saveCategory()" disabled>변경사항 저장</button>
+    </div>
 </div>
 
 <script>
-    let itemList = new List();
-    let nameList = new List();
-    let inputFlag = false; // 카테고리 인풋이 보이는지
+    let itemList = new List(); // 템플릿 적용 카테고리 리스트
+    let categoryList = new List(); // 카테고리 인스턴스 리스트
+    let beforeCategoryList = new List(); // 변경전 카테고리 리스트
+    let inputFlag = false; // 카테고리 인풋을 사용중인지
+    let changedItemIdSet = new Set();
 
-    // 카테고리 input 추가/제거
-    function controlCategoryInput() {
-        if(inputFlag) {
-            itemList.remove(itemList.get(itemList.length() - 1));
-            categoryCancelTextChange();
-            inputFlag = false;
-        } else {
-            itemList.append(categoryInput());
-            categoryAddTextChange();
-            inputFlag = true;
-        }
+    // 카테고리 리스트 초기화
+    $(function () {
+        {{#blog.categories}}
+            categoryList.append(newCtgObject({{id}}, `{{name}}`, {{priorityNum}}, `{{security}}`));
+            beforeCategoryList.append(newCtgObject({{id}}, `{{name}}`, {{priorityNum}}, `{{security}}`));
+        {{/blog.categories}}
 
-        categoryListReset();
-        btnDisabledControl();
+        categoryListSort();
+
+        // 아이템 리스트 구성
+        categoryList.dataStore.forEach((obj) => {
+            itemList.append(categoryListItem(obj.name, obj.priority, obj.security));
+        });
+
+        drawTemplateList();
+    });
+
+    // 카테고리 정렬
+    function categoryListSort() {
+        categoryList.dataStore.sort(function (a,b) {
+            return a.priority - b.priority;
+        });
     }
 
-    // 추가 버튼 제어
+    // 아이템 리스트 reset
+    function resetItemList() {
+        itemList.clear();
+        categoryList.dataStore.forEach((obj) => {
+            itemList.append(categoryListItem(obj.name, obj.priority, obj.security));
+        });
+    }
+
+    // 카테고리 템플릿 리셋
+    function resetCtgListTemplate() {
+        $("#category-list").empty();
+        itemList.dataStore.forEach((item) => {
+            $("#category-list").append(item);
+        });
+    }
+
+    // 카테고리 오브젝트 생성
+    function newCtgObject(id, name, priorityNum, security) {
+        let ctgObject = new categoryObj();
+        ctgObject.setCategory(id, name, priorityNum, security)
+        return ctgObject;
+    }
+
+    // 카테고리 추가 텍스트 css 변경
+    function categoryAddTextChange() {
+        $('#category-add-icon').html(
+                `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                <path d="M0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1z"/>
+            </svg>`
+        );
+        $('#category-add-text').text("접기");
+    }
+
+    // 접기 텍스트 css 변경
+    function categoryCancelTextChange() {
+        $('#category-add-icon').html(
+                `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
+            </svg>`
+        );
+        $('#category-add-text').text("카테고리 추가");
+    }
+
+    // 카테고리 템플릿 마우스 올림/내림 이벤트 정의
+    function itemMouseControl(id){
+        $('#category-item-'+id).mouseover(() => {
+            $("#category-item-btn-drop-"+id).css("visibility", "visible");
+            $("#category-item-btn-down-"+id).css("visibility", "visible");
+            $("#category-item-btn-up-"+id).css("visibility", "visible");
+            $("#category-item-btn-security-"+id).css("visibility", "visible");
+        });
+        $('#category-item-'+id).mouseleave(() => {
+            $("#category-item-btn-drop-"+id).css("visibility", "hidden");
+            $("#category-item-btn-down-"+id).css("visibility", "hidden");
+            $("#category-item-btn-up-"+id).css("visibility", "hidden");
+            $("#category-item-btn-security-"+id).css("visibility", "hidden");
+        });
+    }
+
+    // 카테고리 템플릿 마우스 올림/내림 이벤트 적용
+    function addCtgMouseEvent() {
+        categoryList.dataStore.forEach((obj) => {
+            itemMouseControl(obj.priority);
+        });
+    }
+
+    // 카테고리 템플릿 리셋 (html,css)
+    function resetCtgTemplate() {
+        resetCtgListTemplate();
+        addCtgMouseEvent();
+    }
+
+    // category 리스트 템플릿 리셋
+    function drawTemplateList() {
+        resetCtgListTemplate();
+        addCtgMouseEvent(); // 마우스 올림 내림 이벤트 추가
+        disabledUpDownBtn() // 최상단 업버튼 최하단 다운버튼 비활성화
+    }
+
+    // 위 아래 버튼 비활성화
+    function disabledUpDownBtn() {
+        // 최하단 다운버튼
+        $('#category-item-btn-down-'+(categoryList.length()-1)).attr("disabled", true);
+        $('#category-item-btn-down-'+(categoryList.length()-1)).removeClass("btn-category");
+        $('#category-item-btn-down-'+(categoryList.length()-1)).addClass("btn-category-disabled");
+
+        // 최상단 업버튼
+        $('#category-item-btn-up-0').attr("disabled", true);
+        $('#category-item-btn-up-0').removeClass("btn-category");
+        $('#category-item-btn-up-0').addClass("btn-category-disabled");
+    }
+
+    // 추가 버튼 제어(input 입력해야 추가 버튼 사용 가능)
     function btnDisabledControl() {
         $('#category-input').on("keyup", () => {
             let categoryVal = $('#category-input').val();
@@ -118,26 +231,235 @@
         });
     }
 
+    // 인풋을 사용중이면 다시 그려주기
+    function
+    keepInput(inputText) {
+        if(inputFlag) {
+            let categoryVal = inputText; // 카테고리 인풋 value 가져오기
+            itemList.append(categoryInput());
+
+            // 템플릿에 적용시키는 부분
+            drawTemplateList();
+
+            $('#category-input').val(categoryVal);
+            btnDisabledControl();
+
+            // 텍스트 입력중이었다면 버튼 활성화
+            if(categoryVal != "" && categoryVal.charAt(0) != " ") {
+                $('#btn-category-cfm').attr("disabled", false);
+            } else {
+                $('#btn-category-cfm').attr("disabled", true);
+            }
+        } else {
+            drawTemplateList();
+        }
+    }
+
+    // 변경사항 확인
+    function checkChange() {
+        changedItemIdSet.clear();
+
+        // 변경 확인
+        beforeCategoryList.dataStore.forEach((obj) => {
+            let deleteFlag = true;
+
+            categoryList.dataStore.forEach((item) => {
+                if(obj.id == item.id) {
+                    if (obj.priority != item.priority || obj.security != item.security || obj.name != item.name) {
+                        changedItemIdSet.add(obj.id);
+                    }
+                    deleteFlag = false;
+                }
+            });
+
+            // 삭제 확인
+            if(deleteFlag) {
+                changedItemIdSet.add(obj.id);
+            }
+        });
+
+        // 추가 확인
+        categoryList.dataStore.forEach((obj) => {
+            if(obj.id == -1) {
+                changedItemIdSet.add(obj.id);
+            }
+        });
+
+        return changedItemIdSet;
+    }
+
+    // 변경사항 저장 버튼 활성/비활성
+    function changeBtnSave() {
+        if(checkChange().size == 0) {
+            $('#btn-category-save').attr("disabled", true);
+        } else {
+            $('#btn-category-save').attr("disabled", false);
+        }
+    }
+
+    /**
+     * 버튼 클릭 메서드들
+     * */
+
+    // 카테고리 input 생성/제거
+    function controlCategoryInput() {
+        if(inputFlag) {
+            itemList.remove(itemList.get(itemList.length() - 1));
+            categoryCancelTextChange();
+            inputFlag = false;
+        } else {
+            itemList.append(categoryInput());
+            categoryAddTextChange();
+            inputFlag = true;
+        }
+
+        resetCtgTemplate();
+        btnDisabledControl();
+    }
+
+    // 카테고리 변경사항 저장 버튼
+    function saveCategory() {
+        let data = new List();
+
+        console.log(changedItemIdSet);
+
+        changedItemIdSet.forEach(id => {
+            let deleteFlag = true;
+            categoryList.dataStore.forEach((obj) => {
+                if(obj.id == id) {
+                    data.append(obj);
+                    deleteFlag = false;
+                }
+            });
+            if(deleteFlag) {
+                data.append(newCtgObject(id, "", -1, ""));
+            }
+        });
+
+        console.log(data.dataStore);
+
+        let json = JSON.stringify(data.dataStore);
+
+        $.ajax({
+            type:"post",
+            url:`/{{blog.url}}/manage/category/save`,
+            data: json,
+            contentType:"application/json; charset=utf-8",
+            dataType:"json"
+        }).done(res=>{
+            console.log(res);
+            window.location.href='/{{blog.url}}/manage/category';
+        }).fail(error=>{
+            console.log(error);
+        });
+    }
+
     // 추가 버튼
     function addCategory() {
-        let categoryVal = $('#category-input').val();
+        let categoryVal = $('#category-input').val(); // 카테고리 인풋 value 가져오기
 
+        // 인풋 item 없애는 부분분
         itemList.remove(itemList.get(itemList.length() - 1)); // input 제거
         categoryCancelTextChange(); // 접기 텍스트 -> 카테고리 추가 변경
         inputFlag = false; // input 플레그 false
-        itemList.append(categoryListItem(categoryVal, itemList.length())); // category 리스트에 item 추가
-        nameList.append(categoryVal); // category 리스트에 category 이름 추가
-        categoryListReset(); // 카테고리 리스트 다시 그리기
-        addCtgMouseEvent() // 마우스 올림 내림 이벤트 추가
+
+        // 카테고리 인스턴스 생성
+        let ctgObj = new categoryObj();
+        ctgObj.setCategory(-1, categoryVal, categoryList.length(), "공개");
+
+        // 카테고리를 리스트에 추가하는 부분
+        categoryList.append(ctgObj); // category 리스트에 category 이름 추가
+        itemList.append(categoryListItem(ctgObj.name, ctgObj.priority, ctgObj.security)); // category 리스트에 item 추가
+
+        // 템플릿에 적용시키는 부분
+        drawTemplateList();
+        changeBtnSave(); // 저장 버튼 활성/비활성
     }
 
-    // 카테고리 리스트 리셋
-    function categoryListReset() {
-        $("#category-list").empty();
-        itemList.dataStore.forEach((item) => {
-            $("#category-list").append(item);
-        });
+    // 카테고리 삭제 버튼
+    function dropCtgItem(id) {
+        // 카테고리 인풋 value 가져오기
+        let categoryVal = $('#category-input').val();
+        // item 인덱스 가져오기
+        let index = id.charAt(id.length-1);
+        // 지우는 부분
+        categoryList.remove(categoryList.get(index));
+
+        // 우선순위 변경
+        for(let i = index; i < categoryList.length(); i++) {
+            categoryList.dataStore[i].priority -= 1;
+        }
+
+        resetItemList();
+        keepInput(categoryVal);
+        changeBtnSave(); // 저장 버튼 활성/비활성
     }
+
+    // 카테고리 아래로 이동
+    function downCtgItem(id) {
+        // 카테고리 인풋 value 가져오기
+        let categoryVal = $('#category-input').val();
+        // item 인덱스 가져오기
+        let index = Number(id.charAt(id.length-1));
+
+        // 우선순위 변경
+        categoryList.dataStore[index+1].priority -= 1;
+        categoryList.dataStore[index].priority += 1;
+
+        // 위치 변경
+        categoryListSort();
+
+        // 그려주기
+        resetItemList();
+        drawTemplateList();
+        keepInput(categoryVal);
+        changeBtnSave(); // 저장 버튼 활성/비활성
+    }
+
+    // 카테고리 위로 이동
+    function upCtgItem(id) {
+        // 카테고리 인풋 value 가져오기
+        let categoryVal = $('#category-input').val();
+        // item 인덱스 가져오기
+        let index = Number(id.charAt(id.length-1));
+
+        // 우선순위 변경
+        categoryList.dataStore[index-1].priority += 1;
+        categoryList.dataStore[index].priority -= 1;
+
+        // 위치 변경
+        categoryListSort();
+
+        // 그려주기
+        resetItemList();
+        drawTemplateList();
+        keepInput(categoryVal);
+        changeBtnSave(); // 저장 버튼 활성/비활성
+    }
+
+    // btn 시큐리티
+    function btnSecurity(id) {
+        // 카테고리 인풋 value 가져오기
+        let categoryVal = $('#category-input').val();
+        // 인덱스 가져오기
+        let index = Number(id.charAt(id.length-1));
+
+        if(categoryList.dataStore[index].security == "공개") {
+            categoryList.dataStore[index].security = "비공개";
+        } else {
+            categoryList.dataStore[index].security = "공개";
+        }
+
+        // 그려주기
+        resetItemList();
+        drawTemplateList();
+        keepInput(categoryVal);
+        changeBtnSave(); // 저장 버튼 활성/비활성
+    }
+
+    /**
+     * 폼 리턴 메서드
+     * */
 
     // 카테고리 인풋 폼
     function categoryInput() {
@@ -156,7 +478,7 @@
     }
 
     // 카테고리 리스트 아이템 폼
-    function categoryListItem(categoryVal, priority) {
+    function categoryListItem(categoryVal, priority, security) {
         let item = `<div id="category-item-`;
         item += priority;
         item += `" class="category-border" style="padding-left: 30px; background-color: #f3f5f7;">
@@ -167,11 +489,12 @@
                                 </svg></span>
                                 <span>`
         item += categoryVal;
-                item += `</span>
+        item += `</span>
                                 <span>
-                                    <button id="category-item-btn-drop-`;item += priority;item += `" class="btn-category float-end" onclick="dropCtgItem(this.id)">삭제</button>
                                     <button id="category-item-btn-down-`;item += priority;item += `" class="btn-category float-end" onclick="downCtgItem(this.id)">▽</button>
                                     <button id="category-item-btn-up-`;item += priority;item += `" class="btn-category float-end" onclick="upCtgItem(this.id)">△</button>
+                                    <button id="category-item-btn-drop-`;item += priority;item += `" class="btn-category float-end" onclick="dropCtgItem(this.id)">삭제</button>
+                                    <button id="category-item-btn-security-`;item += priority;item += `" class="btn-category float-end" onclick="btnSecurity(this.id)">`+security+`</button>
                                 </span>
                             </div>
                         </div>
@@ -179,51 +502,9 @@
         return item;
     }
 
-    // 삭제 버튼
-    function dropCtgItem(id) {
-
-    }
-
-    // 카테고리 추가 텍스트 css 변경
-    function categoryAddTextChange() {
-        $('#category-add-icon').html(
-            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
-                <path d="M0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1z"/>
-            </svg>`
-        );
-        $('#category-add-text').text("접기");
-    }
-
-    // 카테고리 추가 텍스트 css 변경
-    function categoryCancelTextChange() {
-        $('#category-add-icon').html(
-            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
-            </svg>`
-        );
-        $('#category-add-text').text("카테고리 추가");
-    }
-
-    // 카테고리 아이템 마우스 올림/내림 이벤트
-    function itemMouseControl(id){
-        $('#category-item-'+id).mouseover(() => {
-            $("#category-item-btn-drop-"+id).css("visibility", "visible");
-            $("#category-item-btn-down-"+id).css("visibility", "visible");
-            $("#category-item-btn-up-"+id).css("visibility", "visible");
-        });
-        $('#category-item-'+id).mouseleave(() => {
-            $("#category-item-btn-drop-"+id).css("visibility", "hidden");
-            $("#category-item-btn-down-"+id).css("visibility", "hidden");
-            $("#category-item-btn-up-"+id).css("visibility", "hidden");
-        });
-    }
-
-    // 카테고리 아이템에 마우스 올림/내림 이벤트 추가
-    function addCtgMouseEvent() {
-        nameList.dataStore.forEach((name) => {
-            itemMouseControl(nameList.find(name));
-        });
-    }
+    /**
+     * 객체 정의
+     * */
 
     function List() {
         this.listSize = 0;
@@ -285,6 +566,7 @@
         return "["+this.dataStore+"]";
     }
 
+
     // 요소를 원하는 위치에 추가하고 그 결과를 boolean 으로 반환하는 함수
     function insert(element, after){
         var insertPos = this.find(after);
@@ -296,9 +578,10 @@
         return false;
     }
 
+
     // 리스트의 모든 요소를 삭제하는 함수
     function clear() {
-        delete this.dataStore;
+        this.dataStore = [];
         this.dataStore.length = 0;
         this.listSize = 0;
     }
@@ -354,6 +637,21 @@
     // index 로 요소를 반환하는 함수
     function get(position){
         return this.dataStore[position];
+    }
+
+    // 카테고리 객체
+    function categoryObj() {
+        this.id = -1;
+        this.name = "";
+        this.priority = -1;
+        this.security = "공개";
+
+        this.setCategory = function (id, name, priority, security) {
+            this.id = id;
+            this.name = name;
+            this.priority = priority;
+            this.security = security;
+        }
     }
 
 </script>

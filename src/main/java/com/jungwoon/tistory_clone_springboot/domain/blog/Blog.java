@@ -1,10 +1,12 @@
 package com.jungwoon.tistory_clone_springboot.domain.blog;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jungwoon.tistory_clone_springboot.domain.category.Category;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Builder
 @ToString
@@ -25,4 +27,8 @@ public class Blog {
     @JoinColumn(name = "userId")
     @ManyToOne
     private User user;
+
+    @JsonIgnoreProperties({"blogs"})
+    @OneToMany(mappedBy = "blog", fetch = FetchType.EAGER)
+    private List<Category> categories;
 }

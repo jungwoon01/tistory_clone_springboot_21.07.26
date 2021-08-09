@@ -27,4 +27,11 @@ public class Category {
 
     @Column(nullable = false)
     private Integer priorityNum;
+
+    public Category update(String name, String security, Integer priorityNum) {
+        this.name = name;
+        this.security = security;
+        this.priorityNum = priorityNum;
+        return this;
+    }
 }

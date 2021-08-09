@@ -2,9 +2,11 @@ package com.jungwoon.tistory_clone_springboot.web.api;
 
 import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
 import com.jungwoon.tistory_clone_springboot.service.BlogService;
+import com.jungwoon.tistory_clone_springboot.service.CategoryService;
 import com.jungwoon.tistory_clone_springboot.service.PostService;
 import com.jungwoon.tistory_clone_springboot.web.dto.CMResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.blog.CategorySaveRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostCreateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,8 @@ public class BlogApiController {
 
     private final PostService postService;
     private final BlogService blogService;
+    private final CategoryService categorySave;
+
     // post 작성
     @PostMapping("/{url}/manage/newpost")
     public ResponseEntity<?> writePost(@RequestBody PostCreateRequestDto dto, @AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable String url) {
@@ -37,5 +41,15 @@ public class BlogApiController {
         List<BlogListResponseDto> dto = blogService.blogList(principalDetails.getUser().getId());
 
         return new ResponseEntity<>(new CMResponseDto<>(1, "블로그 리스트 불러오기 성공", dto), HttpStatus.OK);
+    }
+
+    // 카테고리 추가
+    @PostMapping("/{url}/manage/category/save")
+    public ResponseEntity<?> saveCategory(@PathVariable String url, @RequestBody List<CategorySaveRequestDto> categoryList,
+                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        categorySave.categorySave(url, categoryList, principalDetails);
+
+        return new ResponseEntity<>(new CMResponseDto<>(1, "카테고리 저장 성공", null), HttpStatus.OK);
     }
 }
