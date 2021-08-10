@@ -27,9 +27,12 @@ public class BlogApiController {
     // post 작성
     @PostMapping("/{url}/manage/newpost")
     public ResponseEntity<?> writePost(@RequestBody PostCreateRequestDto dto, @AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable String url) {
-        postService.write(dto, principalDetails);
-        return new ResponseEntity<>(new CMResponseDto<>(1, "글 작성", null), HttpStatus.CREATED);
+        System.out.println("컨트롤러 진입");
+        postService.write(dto, principalDetails, url);
+        System.out.println("컨트롤러 끝");
+        return new ResponseEntity<>(new CMResponseDto<>(1, "글 작성 성공", null), HttpStatus.CREATED);
     }
+
     // 블로그 리스트
     @GetMapping("/blog/api/blogs")
     public ResponseEntity<?> blogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {

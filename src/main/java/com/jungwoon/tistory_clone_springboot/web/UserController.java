@@ -58,6 +58,7 @@ public class UserController {
         return "user/user-blog-make";
     }
 
+    // 블로그 생성
     @PostMapping("user/blog/make")
     public String createBlog(BlogCreateRequestDto dto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         blogService.create(dto, principalDetails);

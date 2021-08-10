@@ -21,7 +21,7 @@ public class Post {
     @Column(nullable = false)
     String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     String content;
 
     String security;

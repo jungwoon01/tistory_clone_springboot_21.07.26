@@ -38,7 +38,7 @@ public class BlogService {
         }
 
         // 블로그 수 검사(5개 이하)
-        if(isCreateBlog(principalDetails.getUser().getId())) {
+        if(!isCreateBlog(principalDetails.getUser().getId())) {
             throw new CustomException("개설 가능한 블로그 수를 초과했습니다.");
         }
 

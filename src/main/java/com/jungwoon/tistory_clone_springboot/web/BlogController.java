@@ -1,6 +1,7 @@
 package com.jungwoon.tistory_clone_springboot.web;
 
 import com.jungwoon.tistory_clone_springboot.service.BlogService;
+import com.jungwoon.tistory_clone_springboot.service.CategoryService;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogManageRespDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class BlogController {
 
     private final BlogService blogService;
+    private final CategoryService categoryService;
 
     // 블로그 관리 페이지
     @GetMapping("/{url}/manage")
@@ -26,7 +28,11 @@ public class BlogController {
 
     // 글쓰기 페이지
     @GetMapping("/{url}/manage/newpost")
-    public String newPost() {
+    public String newPost(@PathVariable String url, Model model) {
+
+        BlogManageRespDto blogManageRespDto = blogService.blogManage(url);
+        model.addAttribute("blog", blogManageRespDto);
+
         return "blog/manage-newpost";
     }
 
