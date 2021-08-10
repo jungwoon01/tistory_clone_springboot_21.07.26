@@ -1,6 +1,7 @@
 package com.jungwoon.tistory_clone_springboot.domain.post;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jungwoon.tistory_clone_springboot.domain.BaseTimeEntity;
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.category.Category;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @Entity
-public class Post {
+public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

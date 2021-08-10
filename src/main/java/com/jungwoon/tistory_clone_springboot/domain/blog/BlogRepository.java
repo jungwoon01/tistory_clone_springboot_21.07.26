@@ -14,7 +14,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     // 생성
     @Modifying
-    @Query(value = "INSERT INTO blog(name, url, userId) value (:name, :url, :userId)", nativeQuery = true)
+    @Query(value = "INSERT INTO blog(name, url, userId, createdDate, modifiedDate) value (:name, :url, :userId, now(), now())", nativeQuery = true)
     void mSave(String name, String url, Long userId);
 
     // 블로그 주인 id로 블로그 불러오기

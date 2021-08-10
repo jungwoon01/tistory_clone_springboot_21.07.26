@@ -1,5 +1,6 @@
 package com.jungwoon.tistory_clone_springboot.domain.category;
 
+import com.jungwoon.tistory_clone_springboot.domain.BaseTimeEntity;
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Category {
+public class Category extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
