@@ -5,14 +5,19 @@ import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.blog.BlogRepository;
 import com.jungwoon.tistory_clone_springboot.domain.category.Category;
 import com.jungwoon.tistory_clone_springboot.domain.category.CategoryRepository;
+import com.jungwoon.tistory_clone_springboot.domain.post.Post;
 import com.jungwoon.tistory_clone_springboot.domain.post.PostRepository;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.domain.user.UserRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostCreateRequestDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.post.PostListRespDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -50,5 +55,35 @@ public class PostService {
 
         postRepository.save(postCreateRequestDto.toEntity(categoryEntity, userEntity, blogEntity));
         System.out.println("카테고리 있는 서비스 끝");
+    }
+
+
+    // 글 목록 가져오기
+    @Transactional(readOnly = true)
+    public List<PostListRespDto> posts(String url) {
+
+        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
+            throw new CustomException("현재 주소의 블로그를 찾을 수 없습니다.");
+        });
+
+        System.out.println("getpost");
+
+        List<Post> posts = blogEntity.getPosts();
+
+        System.out.println(posts);
+
+        List<PostListRespDto> postListRespDtos = new ArrayList<>();
+
+        posts.forEach(post -> {
+            postListRespDtos.add(PostListRespDto.builder()
+                    .title(post.getTitle())
+                    .category(post.getCategory().getName())
+                    .security(post.getSecurity())
+                    .userNickname(post.getUser().getNickname())
+                    .build()
+            );
+        });
+
+        return postListRespDtos;
     }
 }

@@ -11,13 +11,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Data
-public class BlogManageRespDto {
+public class BlogAndCategoryRespDto {
     private Long id;
     private String name;
     private String url;
     private List<Category> categories;
 
-    public BlogManageRespDto(Blog blog) {
+    public BlogAndCategoryRespDto(Blog blog) {
         this.id = blog.getId();
         this.name = blog.getName();
         this.url = blog.getUrl();

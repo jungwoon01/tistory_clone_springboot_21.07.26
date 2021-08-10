@@ -1,5 +1,6 @@
 package com.jungwoon.tistory_clone_springboot.domain.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.category.Category;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
@@ -26,14 +27,17 @@ public class Post {
 
     String security;
 
+    @JsonIgnoreProperties({"categories"})
     @JoinColumn(name = "userId")
     @ManyToOne
     User user;
 
+    @JsonIgnoreProperties({"categories"})
     @JoinColumn(name = "blogId")
     @ManyToOne
     Blog blog;
 
+    @JsonIgnoreProperties({"categories"})
     @JoinColumn(name = "categoryId")
     @ManyToOne
     Category category;

@@ -3,13 +3,16 @@ package com.jungwoon.tistory_clone_springboot.service;
 import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.blog.BlogRepository;
+import com.jungwoon.tistory_clone_springboot.domain.post.Post;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.domain.user.UserRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomValidationException;
+import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndPostsRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogCreateRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogManageRespDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndCategoryRespDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.post.PostListRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.user.UserBlogCountDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -70,13 +73,13 @@ public class BlogService {
 
     // 주소로 블로그 가져오기
     @Transactional(readOnly = true)
-    public BlogManageRespDto blogManage(String url) {
+    public BlogAndCategoryRespDto blogManage(String url) {
 
         Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
             throw new CustomException("잘못된 블로그 주소 입니다.");
         });
 
-        return new BlogManageRespDto(blogEntity);
+        return new BlogAndCategoryRespDto(blogEntity);
     }
 
     // 블로그 countDto
@@ -99,5 +102,38 @@ public class BlogService {
     public boolean isCreateBlog(Long userId) {
         int count = blogRepository.countBlogByUserId(userId);
         return count <= 5;
+    }
+
+    // 블로그와 그 블로그의 글 목록 가져오기
+    @Transactional(readOnly = true)
+    public BlogAndPostsRespDto blogAndPosts(String url) {
+        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
+            throw new CustomException("현재 주소의 블로그를 찾을 수 없습니다.");
+        });
+
+        List<PostListRespDto> postListRespDtos = new ArrayList<>();
+
+        List<Post> posts = blogEntity.getPosts();
+
+
+        posts.forEach(post -> {
+            postListRespDtos.add(PostListRespDto.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .category(post.getCategory() != null ? post.getCategory().getName() : "카테고리 없음")
+                    .security(post.getSecurity())
+                    .userNickname(post.getUser().getNickname())
+                    .build()
+            );
+        });
+
+        BlogAndPostsRespDto dto = BlogAndPostsRespDto.builder()
+                .id(blogEntity.getId())
+                .name(blogEntity.getName())
+                .url(blogEntity.getUrl())
+                .posts(postListRespDtos)
+                .build();
+
+        return dto;
     }
 }
