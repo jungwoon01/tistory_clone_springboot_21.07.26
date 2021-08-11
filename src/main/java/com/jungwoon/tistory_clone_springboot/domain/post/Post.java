@@ -42,4 +42,8 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "categoryId")
     @ManyToOne
     Category category;
+
+    public void updateSecurity(String security) {
+        this.security = security;
+    }
 }

@@ -12,6 +12,7 @@ import com.jungwoon.tistory_clone_springboot.domain.user.UserRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostCreateRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostListRespDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.post.SecurityUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,5 +86,24 @@ public class PostService {
         });
 
         return postListRespDtos;
+    }
+
+    @Transactional
+    public void securityUpdate(SecurityUpdateRequestDto dto, String url) {
+        if(dto.getSecurity() != "공개" && dto.getSecurity() != "비공개") {
+            throw new CustomException("포스트 시큐리티 변경 오류!! 잘못된 접근입니다.");
+        }
+
+        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
+            throw new CustomException("존재하지 않는 블로그 입니다.");
+        });
+
+        Post postEntity = postRepository.findByIdAndBlog(dto.getId(), blogEntity);
+
+        if(postEntity == null) {
+            throw new CustomException("잘못된 블로그 주소와 포스트 id 입니다");
+        }
+
+        postEntity.updateSecurity(dto.getSecurity());
     }
 }

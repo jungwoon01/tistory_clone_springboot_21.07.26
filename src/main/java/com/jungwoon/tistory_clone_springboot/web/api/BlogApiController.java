@@ -8,6 +8,7 @@ import com.jungwoon.tistory_clone_springboot.web.dto.CMResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.CategorySaveRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostCreateRequestDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.post.SecurityUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +55,14 @@ public class BlogApiController {
         categorySave.categorySave(url, categoryList, principalDetails);
 
         return new ResponseEntity<>(new CMResponseDto<>(1, "카테고리 저장 성공", null), HttpStatus.OK);
+    }
+
+    // 글 공개/비공개 수정
+    @PutMapping("/{url}/manage/post/security")
+    public ResponseEntity<?> securityUpdate(@RequestBody SecurityUpdateRequestDto dto, @PathVariable String url) {
+
+        postService.securityUpdate(dto, url);
+
+        return new ResponseEntity<>(new CMResponseDto<>(1, "글 공개/비공개 업데이트 성공", null), HttpStatus.OK);
     }
 }
