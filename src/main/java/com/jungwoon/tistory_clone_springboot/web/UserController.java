@@ -1,11 +1,12 @@
 package com.jungwoon.tistory_clone_springboot.web;
 
 import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
+import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
+import com.jungwoon.tistory_clone_springboot.service.AuthService;
 import com.jungwoon.tistory_clone_springboot.service.BlogService;
 import com.jungwoon.tistory_clone_springboot.service.UserService;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogCreateRequestDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.user.SignUpRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.user.UserBlogCountDto;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -26,6 +26,7 @@ public class UserController {
 
     private final UserService userService;
     private final BlogService blogService;
+    private final AuthService authService;
     private final HttpSession httpSession;
 
     // 유저 등록 컨트롤러
@@ -62,7 +63,7 @@ public class UserController {
     @PostMapping("user/blog/make")
     public String createBlog(BlogCreateRequestDto dto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         blogService.create(dto, principalDetails);
-        httpSession.setAttribute("pricipal", principalDetails); // 블로그 추가 세션 정보 수정
+        authService.setSessionUser(principalDetails, httpSession); // 생성된 블로그 principal 과 세션에 적용
         return "redirect:/user/blog";
     }
 }

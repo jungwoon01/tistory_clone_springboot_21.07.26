@@ -4,14 +4,12 @@ import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.blog.BlogRepository;
 import com.jungwoon.tistory_clone_springboot.domain.post.Post;
-import com.jungwoon.tistory_clone_springboot.domain.user.User;
-import com.jungwoon.tistory_clone_springboot.domain.user.UserRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomValidationException;
+import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndCategoryRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndPostsRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogCreateRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndCategoryRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostListRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.user.UserBlogCountDto;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +24,6 @@ import java.util.List;
 public class BlogService {
 
     private final BlogRepository blogRepository;
-    private final UserRepository userRepository;
 
     // 블로그 생성
     @Transactional
@@ -46,12 +43,6 @@ public class BlogService {
         }
 
         blogRepository.mSave(blogName, blogUrl, principalDetails.getUser().getId());
-        User userEntity = userRepository.findById(principalDetails.getUser().getId()).orElseThrow(() -> {
-            throw new CustomException("로그인 후 다시 시도 하세요.");
-        });
-
-        // 유저 정보 수정
-        principalDetails.setUser(userEntity);
     }
 
     // 블로그 userId로 목록 가져오기
