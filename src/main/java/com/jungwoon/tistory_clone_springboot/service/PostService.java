@@ -90,7 +90,7 @@ public class PostService {
 
     @Transactional
     public void securityUpdate(SecurityUpdateRequestDto dto, String url) {
-        if(dto.getSecurity() != "공개" && dto.getSecurity() != "비공개") {
+        if(!dto.getSecurity().equals("공개") && !dto.getSecurity().equals("비공개")) {
             throw new CustomException("포스트 시큐리티 변경 오류!! 잘못된 접근입니다.");
         }
 

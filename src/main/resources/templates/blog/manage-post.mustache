@@ -51,7 +51,7 @@
                     <div class="col-4" style="padding-top: 8px;">
                         <button id="post-item-btn-delete-{{id}}" class="post-btns float-end">삭제</button>
                         <button id="post-item-btn-modify-{{id}}" class="post-btns float-end">수정</button>
-                        <button id="post-item-btn-security-{{id}}" class="post-btns float-end">{{security}}</button>
+                        <button id="post-item-btn-security-{{id}}" class="post-btns float-end" onclick="btnSecurity(this.id)">{{security}}</button>
                     </div>
                 </div>
             </div>
@@ -76,6 +76,33 @@
         });
         {{/blog.posts}}
     });
+
+    // 글 공개/비공개 변경
+    function btnSecurity(id) {
+        let security = $('#'+id).text();
+        let postId = Number(id.charAt(id.length - 1)); // post id
+
+        if(security == "공개") {
+            security = String("비공개");
+        } else {
+            security = String("공개");
+        }
+
+        let json = JSON.stringify({"security":security, "id":postId});
+
+        $.ajax({
+            type:"put",
+            url:'/{{blog.url}}/manage/post/security',
+            data:json,
+            contentType:"application/json; charset=utf-8",
+            dataType:"json"
+        }).done(res=>{
+            $('#'+id).text(security);
+        }).fail(error=>{
+            alert(JSON.stringify(error));
+        });
+
+    }
 </script>
 
 {{>layout/manage/manage-bottom}}
