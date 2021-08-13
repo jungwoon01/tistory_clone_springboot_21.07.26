@@ -5,6 +5,7 @@ import com.jungwoon.tistory_clone_springboot.domain.BaseTimeEntity;
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.category.Category;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
+import com.jungwoon.tistory_clone_springboot.web.dto.post.PostUpdateRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -45,5 +46,13 @@ public class Post extends BaseTimeEntity {
 
     public void updateSecurity(String security) {
         this.security = security;
+    }
+
+    public void updatePost(Long id, String title, String content, String security, Category category) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.security = security;
+        this.category = category;
     }
 }

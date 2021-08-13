@@ -10,9 +10,7 @@ import com.jungwoon.tistory_clone_springboot.domain.post.PostRepository;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.domain.user.UserRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
-import com.jungwoon.tistory_clone_springboot.web.dto.post.PostCreateRequestDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.post.PostListRespDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.post.SecurityUpdateRequestDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.post.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,5 +103,36 @@ public class PostService {
         }
 
         postEntity.updateSecurity(dto.getSecurity());
+    }
+
+    @Transactional(readOnly = true)
+    public PostRespDto post(Long id) {
+
+        Post postEntity = postRepository.findById(id).orElseThrow(() -> {
+            throw new CustomException("존재하지 않는 글 입니다.");
+        });
+
+        return new PostRespDto(postEntity);
+    }
+
+    // 글 수정
+    @Transactional
+    public void modifyPost(PostUpdateRequestDto dto) {
+        Post postEntity = postRepository.findById(dto.getId()).orElseThrow(()-> {
+            throw new CustomException("존재하지 않는 post id 입니다.");
+        });
+
+        // 카테고리를 선택하지 않았을 때 (페이지에서는 '카테고리' 셀렉트 선택한 것으로 보임)
+        if(dto.getCategoryId() == 0) {
+            postEntity.updatePost(dto.getId(), dto.getTitle(), dto.getContent(), dto.getSecurity(), null);
+            return;
+        }
+
+        // 카테고리를 선택했을 때
+        Category categoryEntity = categoryRepository.findById(dto.getCategoryId()).orElseThrow(()->{
+            throw new CustomException("존재하지 않는 카테고리입니다.");
+        });
+
+        postEntity.updatePost(dto.getId(), dto.getTitle(), dto.getContent(), dto.getSecurity(), categoryEntity);
     }
 }

@@ -8,6 +8,7 @@ import com.jungwoon.tistory_clone_springboot.web.dto.CMResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.CategorySaveRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostCreateRequestDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.post.PostUpdateRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.SecurityUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -64,5 +65,13 @@ public class BlogApiController {
         postService.securityUpdate(dto, url);
 
         return new ResponseEntity<>(new CMResponseDto<>(1, "글 공개/비공개 업데이트 성공", null), HttpStatus.OK);
+    }
+
+    @PutMapping("/{url}/manage/post/modify")
+    public ResponseEntity<?> modifyPost(@RequestBody PostUpdateRequestDto dto) {
+
+        postService.modifyPost(dto);
+
+        return new ResponseEntity<>(new CMResponseDto<>(1, "글 수정 성공", null), HttpStatus.OK);
     }
 }

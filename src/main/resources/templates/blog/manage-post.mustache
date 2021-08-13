@@ -50,8 +50,8 @@
                     </div>
                     <div class="col-4" style="padding-top: 8px;">
                         <button id="post-item-btn-delete-{{id}}" class="post-btns float-end">삭제</button>
-                        <button id="post-item-btn-modify-{{id}}" class="post-btns float-end">수정</button>
-                        <button id="post-item-btn-security-{{id}}" class="post-btns float-end" onclick="btnSecurity(this.id)">{{security}}</button>
+                        <button id="post-item-btn-modify-{{id}}" class="post-btns float-end" onclick="btnUpdatePost(this.id)">수정</button>
+                        <button id="post-item-btn-security-{{id}}" class="post-btns float-end" onclick="btnUpdatePostSecurity(this.id)">{{security}}</button>
                     </div>
                 </div>
             </div>
@@ -61,7 +61,8 @@
 </div>
 
 <script>
-    // 카테고리 템플릿 마우스 올림/내림 이벤트 정의
+
+// 카테고리 템플릿 마우스 올림/내림 이벤트 정의
     $(function (){
         {{#blog.posts}}
         $('#post-item-'+{{id}}).mouseover(() => {
@@ -78,7 +79,7 @@
     });
 
     // 글 공개/비공개 변경
-    function btnSecurity(id) {
+    function btnUpdatePostSecurity(id) {
         let security = $('#'+id).text();
         let postId = Number(id.charAt(id.length - 1)); // post id
 
@@ -101,7 +102,21 @@
         }).fail(error=>{
             alert(JSON.stringify(error));
         });
+    }
 
+    // 수정 버튼
+    function btnUpdatePost(id) {
+
+        let postId = Number(id.charAt(id.length - 1)); // post id
+
+        var form = document.createElement('form');
+        form.setAttribute('method', 'get');
+        form.setAttribute('action', '/{{blog.url}}/manage/post/modify/'+postId);
+        document.charset = "utf-8";
+
+        document.body.appendChild(form);
+
+        form.submit();
     }
 </script>
 
