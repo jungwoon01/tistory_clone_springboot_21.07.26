@@ -9,6 +9,7 @@ import com.jungwoon.tistory_clone_springboot.domain.post.Post;
 import com.jungwoon.tistory_clone_springboot.domain.post.PostRepository;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.domain.user.UserRepository;
+import com.jungwoon.tistory_clone_springboot.handler.exception.CustomApiException;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.*;
 import lombok.RequiredArgsConstructor;
@@ -134,5 +135,16 @@ public class PostService {
         });
 
         postEntity.updatePost(dto.getId(), dto.getTitle(), dto.getContent(), dto.getSecurity(), categoryEntity);
+    }
+
+    @Transactional
+    // 글 삭제
+    public void deletePost(Long postId) {
+
+        Post postEntity = postRepository.findById(postId).orElseThrow(() -> {
+            throw new CustomApiException("글을 삭제할 수 없습니다.\n존재하지 않는 글 입니다.");
+        });
+
+        postRepository.delete(postEntity);
     }
 }

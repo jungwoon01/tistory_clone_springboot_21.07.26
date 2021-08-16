@@ -49,13 +49,34 @@
                         </div>
                     </div>
                     <div class="col-4" style="padding-top: 8px;">
-                        <button id="post-item-btn-delete-{{id}}" class="post-btns float-end">삭제</button>
+                        <button id="post-item-btn-delete-{{id}}" class="post-btns float-end" onclick="btnDeletePost(this.id)">삭제</button>
                         <button id="post-item-btn-modify-{{id}}" class="post-btns float-end" onclick="btnUpdatePost(this.id)">수정</button>
                         <button id="post-item-btn-security-{{id}}" class="post-btns float-end" onclick="btnUpdatePostSecurity(this.id)">{{security}}</button>
                     </div>
                 </div>
             </div>
             {{/blog.posts}}
+        </div>
+    </div>
+</div>
+
+
+<!-- 삭제 확인 Modal -->
+<div class="modal fade" id="delete-post-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="delete-post-modal-title" id="delete-post-modal-title">글 삭제</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span id="chosen-post-id" style="visibility: hidden"></span>
+                <h6>정말 삭제하시겠습니까?</h6>
+                <p>삭제된 글을 복구할 수 없습니다.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" onclick="btnChkDeletePost()">삭제</button>
+            </div>
         </div>
     </div>
 </div>
@@ -117,6 +138,33 @@
         document.body.appendChild(form);
 
         form.submit();
+    }
+
+    // 삭제 버튼
+    function btnDeletePost(id) {
+
+        $('#chosen-post-id').text(id);
+        $('#delete-post-modal').modal('toggle');
+    }
+
+    // 삭제 확인 모달 삭제 버튼
+    function btnChkDeletePost() {
+
+        let id = $('#chosen-post-id').text();
+        let postId = Number(id.charAt(id.length - 1)); // post id
+
+        $.ajax({
+            type:"delete",
+            url:'/{{blog.url}}/manage/post/delete',
+            data: {postId : postId},
+            contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            dataType:"json"
+        }).done(res=>{
+            $('#post-item-'+postId).remove();
+            $('#delete-post-modal').modal("hide");
+        }).fail(error=>{
+            alert(JSON.stringify(error.responseJSON.data));
+        });
     }
 </script>
 

@@ -39,7 +39,7 @@ public class BlogApiController {
     @GetMapping("/blog/api/blogs")
     public ResponseEntity<?> blogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         // 로그인 확인
-        if(principalDetails == null) {
+        if (principalDetails == null) {
             return new ResponseEntity<>(new CMResponseDto<>(0, "로그인이 되어있지 않습니다.", null), HttpStatus.OK);
         }
 
@@ -67,11 +67,21 @@ public class BlogApiController {
         return new ResponseEntity<>(new CMResponseDto<>(1, "글 공개/비공개 업데이트 성공", null), HttpStatus.OK);
     }
 
+    // 글 수정
     @PutMapping("/{url}/manage/post/modify")
     public ResponseEntity<?> modifyPost(@RequestBody PostUpdateRequestDto dto) {
 
         postService.modifyPost(dto);
 
         return new ResponseEntity<>(new CMResponseDto<>(1, "글 수정 성공", null), HttpStatus.OK);
+    }
+
+    // 글 삭제
+    @DeleteMapping("/{url}/manage/post/delete")
+    public ResponseEntity<?> deletePost(Long postId) {
+
+        postService.deletePost(postId);
+
+        return new ResponseEntity<>(new CMResponseDto<>(1, "글 삭제 성공", null), HttpStatus.OK);
     }
 }
