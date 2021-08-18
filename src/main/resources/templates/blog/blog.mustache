@@ -148,14 +148,15 @@
         border-top: 2px solid black;
         border-bottom: 1px solid #DDDDDD;
         padding: 18px;
+        margin-bottom: 10px;
     }
 
     .btn-comment {
         margin-left: 10px;
     }
 
-    .comment-title {
-        font-size: 13pt;
+    .comment-author {
+        font-size: 12pt;
     }
 
     .comment-content {
@@ -323,24 +324,26 @@
                     <div class="main-blank-10"></div>
                     <!--작성된 댓글 부분-->
                     <div id="comment-list-{{id}}">
-
-                    </div>
-                    <div class="comment-container">
-                        <div class="row">
-                            <div class="col-12">
-                                <p class="comment-title">댓글작성인<span class="float-end comment-date">2021.12.12 12:00</span></p>
+                        {{#comments}}
+                        <div id="comment-item-{{id}}" class="comment-container">
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="comment-author">{{author}}<span class="float-end comment-date">{{createdDate}}</span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="comment-content">{{content}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button id="btn-comment-reply-{{id}}" class="float-end btn btn-sm btn-comment">Reply</button>
+                                    <button id="btn-comment-delete-{{id}}" class="float-end btn btn-sm btn-comment">Delete</button>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <p class="comment-content">댓글 내용</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <button class="float-end btn btn-sm btn-comment">Reply</button><button class="float-end btn btn-sm btn-comment">Delete</button>
-                            </div>
-                        </div>
+                        {{/comments}}
                     </div>
                     <!--작성된 댓글 부분-->
                 </div>
@@ -353,6 +356,66 @@
     <div style="height: 300px;"></div>
 </main>
 
+<script>
 
+    // 댓글 작성 버튼 클릭
+    function btnCommentWrite(postId) {
+        let author = $('#comment-name-'+postId).val();
+        let password = $('#comment-password-'+postId).val();
+        let content = $('#comment-content-'+postId).val();
+
+        $.ajax({
+            type:"post",
+            url:'/api/comment/write',
+            data: JSON.stringify({
+                author : author,
+                password : password,
+                content : content,
+                postId : postId
+            }),
+            contentType:"application/json; charset=utf-8",
+            dataType:"json"
+        }).done(res => {
+            let resPostId = res.data.postId;
+
+            $('#comment-list-'+resPostId).append(commentItem(res.data.author, res.data.content, res.data.createdDate, res.data.id));
+
+            $('#comment-name-'+resPostId).val("");
+            $('#comment-password-'+resPostId).val("");
+            $('#comment-content-'+resPostId).val("");
+        }).fail(error => {
+            alert("서버 오류로 댓글 작성을 실패하였습니다.");
+
+            $('#comment-name-'+resPostId).val("");
+            $('#comment-password-'+resPostId).val("");
+            $('#comment-content-'+resPostId).val("");
+        });
+    }
+
+    // 댓글 item 템플릿
+    function commentItem(author, content, createdDate, commentId) {
+        return `
+                    <div id="comment-item-`+commentId+`" class="comment-container">
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="comment-author">`+author+`<span class="float-end comment-date">`+createdDate+`</span></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="comment-content">`+content+`</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <button id="btn-comment-reply-`+commentId+`" class="float-end btn btn-sm btn-comment">Reply</button>
+                                <button id="btn-comment-delete-`+commentId+`" class="float-end btn btn-sm btn-comment">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+        `
+    }
+
+</script>
 
 {{>layout/blog/blog-footer}}

@@ -1,21 +1,20 @@
 package com.jungwoon.tistory_clone_springboot.web.dto.post;
 
-import lombok.AllArgsConstructor;
+import com.jungwoon.tistory_clone_springboot.web.dto.comment.CommentRespDto;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
-@AllArgsConstructor
 @Data
-public class PostListRespDto {
+public class PostAndCommentRespDto {
     private Long id;
     private String title;
     private String content;
     private String security;
-    private String userNickname;
-    private String category;
     private LocalDateTime modifiedDate;
     private LocalDateTime createdDate;
+    private List<CommentRespDto> comments;
 }

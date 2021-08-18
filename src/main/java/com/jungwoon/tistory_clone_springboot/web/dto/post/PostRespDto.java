@@ -9,13 +9,29 @@ import java.time.LocalDateTime;
 
 @Data
 public class PostRespDto {
-    Long id;
-    String title;
-    String content;
-    String security;
-    Long categoryId;
-    LocalDateTime modifiedDate;
-    LocalDateTime createdDate;
+    private Long id;
+    private String title;
+    private String content;
+    private String security;
+    private String userNickname;
+    private String category;
+    private Long categoryId;
+    private LocalDateTime modifiedDate;
+    private LocalDateTime createdDate;
+
+    @Builder
+    public PostRespDto(Long id, String title, String content, String security, String userNickname,
+                       String category, Long categoryId, LocalDateTime modifiedDate, LocalDateTime createdDate) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.security = security;
+        this.userNickname = userNickname;
+        this.category = category;
+        this.categoryId = categoryId;
+        this.modifiedDate = modifiedDate;
+        this.createdDate = createdDate;
+    }
 
     @Builder
     public PostRespDto(Post post) {

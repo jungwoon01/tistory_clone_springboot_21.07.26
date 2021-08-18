@@ -4,16 +4,13 @@ import com.jungwoon.tistory_clone_springboot.service.BlogService;
 import com.jungwoon.tistory_clone_springboot.service.PostService;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndCategoryRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndPostsRespDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.post.PostListRespDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.post.PostAndCommentRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostRespDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -72,9 +69,9 @@ public class BlogController {
     @GetMapping("/{url}")
     public String blog(@PathVariable String url, Model model) {
 
-        List<PostListRespDto> postListRespDto = postService.posts(url);
+        List<PostAndCommentRespDto> dto = postService.postsAndComments(url);
 
-        model.addAttribute("posts", postListRespDto);
+        model.addAttribute("posts", dto);
 
         return "blog/blog";
     }

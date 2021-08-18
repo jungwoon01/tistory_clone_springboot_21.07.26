@@ -11,6 +11,7 @@ import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.domain.user.UserRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomApiException;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
+import com.jungwoon.tistory_clone_springboot.web.dto.comment.CommentRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -60,22 +61,19 @@ public class PostService {
 
     // 글 목록 가져오기
     @Transactional(readOnly = true)
-    public List<PostListRespDto> posts(String url) {
+    public List<PostRespDto> posts(String url) {
 
         Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
             throw new CustomException("현재 주소의 블로그를 찾을 수 없습니다.");
         });
 
-        System.out.println("getpost");
-
         List<Post> posts = blogEntity.getPosts();
 
-        System.out.println(posts);
-
-        List<PostListRespDto> postListRespDtos = new ArrayList<>();
+        List<PostRespDto> postRespDtos = new ArrayList<>();
 
         posts.forEach(post -> {
-            postListRespDtos.add(PostListRespDto.builder()
+            postRespDtos.add(PostRespDto.builder()
+                    .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getContent())
                     .category(post.getCategory() == null ? "카테고리 없음" : post.getCategory().getName())
@@ -87,7 +85,7 @@ public class PostService {
             );
         });
 
-        return postListRespDtos;
+        return postRespDtos;
     }
 
     @Transactional
@@ -149,5 +147,51 @@ public class PostService {
         });
 
         postRepository.delete(postEntity);
+    }
+
+    // 블로그에 대한 글 리스트 리턴
+    @Transactional(readOnly = true)
+    public List<PostAndCommentRespDto> postsAndComments(String url) {
+
+        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
+            throw new CustomException("현재 주소의 블로그를 찾을 수 없습니다.");
+        });
+
+        List<Post> posts = blogEntity.getPosts();
+
+        List<PostAndCommentRespDto> postAndCommentRespDtos = new ArrayList<>();
+
+        posts.forEach(post -> {
+            postAndCommentRespDtos.add(PostAndCommentRespDto.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .security(post.getSecurity())
+                    .createdDate(post.getCreatedDate())
+                    .modifiedDate(post.getModifiedDate())
+                    .comments(getCommentsRespDtoInPost(post))
+                    .build()
+            );
+        });
+
+        return postAndCommentRespDtos;
+    }
+
+    // 글에 대한 댓글 리스트 리턴
+    private List<CommentRespDto> getCommentsRespDtoInPost(Post post) {
+        List<CommentRespDto> commentRespDtos = new ArrayList<>();
+
+        post.getComments().forEach(comment -> {
+            commentRespDtos.add(CommentRespDto.builder()
+                    .id(comment.getId())
+                    .author(comment.getAuthor())
+                    .content(comment.getContent())
+                    .postId(comment.getPost().getId())
+                    .createdDate(comment.getCreatedDate())
+                    .modifiedDate(comment.getModifiedDate())
+                    .build());
+        });
+
+        return commentRespDtos;
     }
 }

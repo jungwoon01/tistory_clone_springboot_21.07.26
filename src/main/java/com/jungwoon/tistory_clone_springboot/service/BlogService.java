@@ -10,7 +10,7 @@ import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndCategoryRespDto
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndPostsRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogCreateRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.post.PostListRespDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.post.PostRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.user.UserBlogCountDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -102,13 +102,13 @@ public class BlogService {
             throw new CustomException("현재 주소의 블로그를 찾을 수 없습니다.");
         });
 
-        List<PostListRespDto> postListRespDtos = new ArrayList<>();
+        List<PostRespDto> postRespDtos = new ArrayList<>();
 
         List<Post> posts = blogEntity.getPosts();
 
 
         posts.forEach(post -> {
-            postListRespDtos.add(PostListRespDto.builder()
+            postRespDtos.add(PostRespDto.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .category(post.getCategory() != null ? post.getCategory().getName() : "카테고리 없음")
@@ -122,7 +122,7 @@ public class BlogService {
                 .id(blogEntity.getId())
                 .name(blogEntity.getName())
                 .url(blogEntity.getUrl())
-                .posts(postListRespDtos)
+                .posts(postRespDtos)
                 .build();
 
         return dto;
