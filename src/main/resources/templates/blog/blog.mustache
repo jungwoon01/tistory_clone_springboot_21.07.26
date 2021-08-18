@@ -338,8 +338,8 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <button id="btn-comment-reply-{{id}}" class="float-end btn btn-sm btn-comment">Reply</button>
-                                    <button id="btn-comment-delete-{{id}}" class="float-end btn btn-sm btn-comment">Delete</button>
+                                    <button id="btn-comment-reply-{{id}}" class="float-end btn btn-sm btn-comment" onclick="btnCommentUpdate(this.id)">Update</button>
+                                    <button id="btn-comment-delete-{{id}}" class="float-end btn btn-sm btn-comment" onclick="btnCommentDeleteModal(this.id)">Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -356,7 +356,41 @@
     <div style="height: 300px;"></div>
 </main>
 
+<!-- 댓글 삭제 Modal -->
+<div class="modal fade" id="modal-delete-comment" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">댓글 삭제</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-delete-comment-description">댓글을 삭제하려면 비밀번호를 입력하세요.</p>
+                <input class="form-control" type="password" id="modal-comment-password" maxlength="12">
+                <input type="text" id="delete-comment-id" value="" hidden>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" onclick="btnCommentDelete()">댓글 삭제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    /**
+     * 이벤트 추가
+     * */
+
+    $(function () {
+        $('#modal-comment-password').on("propertychange change keyup paste input", (key) => {
+            $('#modal-delete-comment-description').text("댓글을 삭제하려면 비밀번호를 입력하세요.");
+            $('#modal-delete-comment-description').css("color", '#000000');
+        });
+    });
+
+    /**
+     * 버튼 클릭 이벤트 함수
+     * */
 
     // 댓글 작성 버튼 클릭
     function btnCommentWrite(postId) {
@@ -385,12 +419,54 @@
             $('#comment-content-'+resPostId).val("");
         }).fail(error => {
             alert("서버 오류로 댓글 작성을 실패하였습니다.");
-
-            $('#comment-name-'+resPostId).val("");
-            $('#comment-password-'+resPostId).val("");
-            $('#comment-content-'+resPostId).val("");
         });
     }
+
+    // 댓글 수정 버튼
+    function btnCommentUpdate() {
+
+    }
+
+    // 댓글 삭제 모달
+    function btnCommentDeleteModal(id) {
+        $('#modal-delete-comment-description').text("댓글을 삭제하려면 비밀번호를 입력하세요.");
+        $('#modal-comment-password').val("");
+        $('#delete-comment-id').val(id);
+
+        $('#modal-delete-comment').modal('toggle');
+    }
+
+    // 댓글 삭제 버튼
+    function btnCommentDelete() {
+        let password = $('#modal-comment-password').val();
+
+        let id = $('#delete-comment-id').val();
+        let strArr = id.split('-');
+        let commentId = strArr[strArr.length - 1]; // 댓글 id
+
+        $.ajax({
+            type:"post",
+            url:'/api/comment/check_password',
+            data: {commentId : commentId, password : password},
+            contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            dataType:"json"
+        }).done(res => {
+            // 비밀번호가 일치하면 {code : 1} 을 응답 받음
+            if(res.code != 1) {
+                $('#modal-delete-comment-description').text("비밀번호가 틀렸습니다.");
+                $('#modal-delete-comment-description').css("color", '#b02a37');
+            } else {
+                deleteComment(commentId);
+            }
+        }).fail(error => {
+            alert("서버오류로 댓글 삭제를 실패했습니다.");
+            $('#modal-delete-comment').modal('hide');
+        });
+    }
+
+    /**
+     * 템플릿 리턴 함수
+     * */
 
     // 댓글 item 템플릿
     function commentItem(author, content, createdDate, commentId) {
@@ -408,12 +484,33 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <button id="btn-comment-reply-`+commentId+`" class="float-end btn btn-sm btn-comment">Reply</button>
-                                <button id="btn-comment-delete-`+commentId+`" class="float-end btn btn-sm btn-comment">Delete</button>
+                                <button id="btn-comment-reply-`+commentId+`" class="float-end btn btn-sm btn-comment" onclick="btnCommentUpdate(this.id)">Update</button>
+                                <button id="btn-comment-delete-`+commentId+`" class="float-end btn btn-sm btn-comment" onclick="btnCommentDeleteModal(this.id)">Delete</button>
                             </div>
                         </div>
                     </div>
         `
+    }
+
+    /**
+     * 그 외 함수들
+    * */
+
+    function deleteComment(commentId) {
+
+        $.ajax({
+            type:"delete",
+            url:'/api/comment/delete',
+            data: {commentId : commentId},
+            contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            dataType:"json"
+        }).done(res => {
+            $('#modal-delete-comment').modal('hide');
+            $('#comment-item-'+commentId).remove();
+        }).fail(error => {
+            $('#modal-delete-comment').modal('hide');
+            alert("서버오류로 댓글 삭제를 실패했습니다.");
+        });
     }
 
 </script>

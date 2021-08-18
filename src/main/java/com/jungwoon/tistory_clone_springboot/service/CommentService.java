@@ -18,6 +18,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
+    // 댓글 작성
     @Transactional
     public CommentRespDto writeComment(WriteCommentRequestDto dto) {
 
@@ -35,5 +36,25 @@ public class CommentService {
                 .createdDate(commentEntity.getCreatedDate())
                 .modifiedDate(commentEntity.getModifiedDate())
                 .build();
+    }
+
+    // 댓글 삭제
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment commentEntity = commentRepository.findById(commentId).orElseThrow(() -> {
+            throw new CustomApiException("존재하는 댓글이 아닙니다.");
+        });
+
+        commentRepository.delete(commentEntity);
+    }
+
+    // 비밀번호 일치 여부 확인
+    @Transactional(readOnly = true)
+    public Boolean checkPassword(Long commentId, String password) {
+        Comment commentEntity = commentRepository.findById(commentId).orElseThrow(() -> {
+            throw new CustomApiException("존재하는 댓글이 아닙니다.");
+        });
+
+        return commentEntity.getPassword().equals(password);
     }
 }
