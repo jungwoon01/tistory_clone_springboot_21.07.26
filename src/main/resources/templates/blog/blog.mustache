@@ -310,7 +310,7 @@
                     <div class="main-blank-10"></div>
                     <div class="row">
                         <div class="col-12">
-                            <textarea id="comment-content-{{id}}" class="form-control" rows="3"></textarea>
+                            <textarea id="comment-content-{{id}}" class="form-control" rows="3" maxlength="100"></textarea>
                         </div>
                     </div>
                     <div class="main-blank-10"></div>
@@ -328,12 +328,15 @@
                         <div id="comment-item-{{id}}" class="comment-container">
                             <div class="row">
                                 <div class="col-12">
-                                    <p class="comment-author">{{author}}<span class="float-end comment-date">{{createdDate}}</span></p>
+                                    <p class="comment-author">
+                                        <span id="comment-author-{{id}}">{{author}}</span>
+                                        <span id="comment-createdDate-{{id}}" class="float-end comment-date">{{createdDate}}</span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <p class="comment-content">{{content}}</p>
+                                    <p id="comment-content-{{id}}" class="comment-content">{{content}}</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -377,10 +380,15 @@
 </div>
 
 <script>
+    let commentTemp;
+    let updatingId;
+    let isUpdating = false;
+
     /**
      * 이벤트 추가
      * */
 
+    // 모달 비밀번호 입력,수정 이벤트
     $(function () {
         $('#modal-comment-password').on("propertychange change keyup paste input", (key) => {
             $('#modal-delete-comment-description').text("댓글을 삭제하려면 비밀번호를 입력하세요.");
@@ -422,9 +430,67 @@
         });
     }
 
-    // 댓글 수정 버튼
-    function btnCommentUpdate() {
+    // 댓글 수정 버튼 ( 수정을 위한 템플릿으로 변환 )
+    function btnCommentUpdate(id) {
+        if(isUpdating) {
+            $('#comment-item-'+updatingId).html(commentTemp); // 임시 저장 불러오기
+        }
 
+        let strArr = id.split('-');
+        let commentId = strArr[strArr.length - 1]; // 댓글 id
+
+
+        let author = $('#comment-author-'+commentId).text();
+        let createdDate = $('#comment-createdDate-'+commentId).text();
+        let content = $('#comment-content-'+commentId).text();
+
+        commentTemp = $('#comment-item-'+commentId).html(); // 임시 저장
+        $('#comment-item-'+commentId).html(commentUpdateTemplate(author,content,createdDate,commentId));
+
+        commentUpdatePWInputEvent(); // input 입력 이벤트 추가
+
+        updatingId = commentId;
+        isUpdating = true;
+    }
+
+    // 댓글 수정 취소
+    function btnCommentUpdateCancel(id) {
+        let strArr = id.split('-');
+        let commentId = strArr[strArr.length - 1]; // 댓글 id
+
+        $('#comment-item-'+commentId).html(commentTemp); // 임시 저장 불러오기
+
+        isUpdating = false;
+    }
+
+    // 댓글 수정 버튼 (서버전송)
+    function btnCommentUpdateSend(id) {
+        let strArr = id.split('-');
+        let commentId = strArr[strArr.length - 1]; // 댓글 id
+
+        let content = $('#textarea-update-comment').val();
+        let password = $('#update-comment-password').val();
+
+        $.ajax({
+            type:"put",
+            url:'/api/comment/update',
+            data: JSON.stringify({"commentId" : commentId, "password" : password, "content" : content}),
+            contentType:"application/json; charset=utf-8",
+            dataType:"json"
+        }).done(res => {
+            // 비밀번호가 일치하면 {code : 1} 을 응답 받음
+            // 비밀번호가 일치하지 않으면 {code : -1} 을 응답 받음
+            if(res.code == -1) {
+                $('#update-comment-description').text("비밀번호가 틀렸습니다.");
+                $('#update-comment-description').css("color", '#b02a37');
+            } else if(res.code == 1) {
+                $('#comment-item-'+commentId).html(commentTemp); // 임시 저장 불러오기
+                $('#comment-content-'+res.data.id).text(res.data.content);
+                isUpdating = false;
+            }
+        }).fail(error => {
+            alert("서버오류로 댓글 삭제를 실패했습니다.");
+        });
     }
 
     // 댓글 삭제 모달
@@ -474,12 +540,15 @@
                     <div id="comment-item-`+commentId+`" class="comment-container">
                         <div class="row">
                             <div class="col-12">
-                                <p class="comment-author">`+author+`<span class="float-end comment-date">`+createdDate+`</span></p>
+                                <p class="comment-author">
+                                    <span id="comment-author-`+commentId+`">`+author+`</span>
+                                    <span id="comment-createdDate-`+commentId+`" class="float-end comment-date">`+createdDate+`</span>
+                                </p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <p class="comment-content">`+content+`</p>
+                                <p id="comment-content-`+commentId+`" class="comment-content">`+content+`</p>
                             </div>
                         </div>
                         <div class="row">
@@ -487,6 +556,41 @@
                                 <button id="btn-comment-reply-`+commentId+`" class="float-end btn btn-sm btn-comment" onclick="btnCommentUpdate(this.id)">Update</button>
                                 <button id="btn-comment-delete-`+commentId+`" class="float-end btn btn-sm btn-comment" onclick="btnCommentDeleteModal(this.id)">Delete</button>
                             </div>
+                        </div>
+                    </div>
+        `
+    }
+
+    // 댓글 수정 템플릿 리턴
+    function commentUpdateTemplate(author, content, createdDate, commentId) {
+        return `
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="comment-author">`+author+`<span class="float-end comment-date">`+createdDate+`</span></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <textarea id="textarea-update-comment" class="form-control" maxlength="100">`+content+`</textarea>
+                        </div>
+                    </div>
+                    <div class="main-blank-10"></div>
+                    <div class="row">
+                        <div class="col-2">
+                            <label for="update-comment-password">비밀번호</label>
+                        </div>
+                        <div class="col-4">
+                            <input id="update-comment-password" type="password" class="form-control" maxlength="12">
+                        </div>
+                        <div class="col-6">
+                            <p id="update-comment-description"></p>
+                        </div>
+                    </div>
+                    <div class="main-blank-10"></div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button id="btn-comment-update-`+commentId+`" class="float-end btn btn-sm btn-comment" onclick="btnCommentUpdateSend(this.id)">Update</button>
+                            <button id="btn-comment-cancel-`+commentId+`" class="float-end btn btn-sm btn-comment" onclick="btnCommentUpdateCancel(this.id)">Cancel</button>
                         </div>
                     </div>
         `
@@ -510,6 +614,12 @@
         }).fail(error => {
             $('#modal-delete-comment').modal('hide');
             alert("서버오류로 댓글 삭제를 실패했습니다.");
+        });
+    }
+
+    function commentUpdatePWInputEvent() {
+        $('#update-comment-password').on("propertychange change keyup paste input", (key) => {
+            $('#update-comment-description').text("");
         });
     }
 

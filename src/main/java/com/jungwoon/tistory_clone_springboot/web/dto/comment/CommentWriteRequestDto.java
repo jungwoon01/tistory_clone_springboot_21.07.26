@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class WriteCommentRequestDto {
+public class CommentWriteRequestDto {
     String author;
     String password;
     String content;

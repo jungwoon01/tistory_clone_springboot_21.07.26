@@ -5,7 +5,8 @@ import com.jungwoon.tistory_clone_springboot.domain.comment.CommentRepository;
 import com.jungwoon.tistory_clone_springboot.domain.post.Post;
 import com.jungwoon.tistory_clone_springboot.domain.post.PostRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomApiException;
-import com.jungwoon.tistory_clone_springboot.web.dto.comment.WriteCommentRequestDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.comment.CommentUpdateRequestDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.comment.CommentWriteRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.comment.CommentRespDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class CommentService {
 
     // 댓글 작성
     @Transactional
-    public CommentRespDto writeComment(WriteCommentRequestDto dto) {
+    public CommentRespDto writeComment(CommentWriteRequestDto dto) {
 
         Post postEntity = postRepository.findById(dto.getPostId()).orElseThrow(() -> {
             throw new CustomApiException("댓글 작성 실패\n존재하지 않는 글 입니다.");
@@ -28,14 +29,7 @@ public class CommentService {
 
         Comment commentEntity = commentRepository.save(dto.toEntity(postEntity));
 
-        return CommentRespDto.builder()
-                .id(commentEntity.getId())
-                .author(commentEntity.getAuthor())
-                .content(commentEntity.getContent())
-                .postId(commentEntity.getPost().getId())
-                .createdDate(commentEntity.getCreatedDate())
-                .modifiedDate(commentEntity.getModifiedDate())
-                .build();
+        return new CommentRespDto(commentEntity);
     }
 
     // 댓글 삭제
@@ -56,5 +50,17 @@ public class CommentService {
         });
 
         return commentEntity.getPassword().equals(password);
+    }
+
+    @Transactional
+    public CommentRespDto updateComment(CommentUpdateRequestDto requestDto) {
+
+        Comment commentEntity = commentRepository.findById(requestDto.getCommentId()).orElseThrow(() -> {
+            throw new CustomApiException("존재하는 댓글이 아닙니다.");
+        });
+
+        commentEntity.update(requestDto.getContent());
+
+        return new CommentRespDto(commentEntity);
     }
 }
