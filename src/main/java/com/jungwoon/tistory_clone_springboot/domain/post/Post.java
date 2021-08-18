@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jungwoon.tistory_clone_springboot.domain.BaseTimeEntity;
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.category.Category;
+import com.jungwoon.tistory_clone_springboot.domain.comment.Comment;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostUpdateRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -28,20 +30,22 @@ public class Post extends BaseTimeEntity {
 
     String security;
 
-    @JsonIgnoreProperties({"categories", "blogs"})
+    @JsonIgnoreProperties({"blogs"})
     @JoinColumn(name = "userId")
     @ManyToOne
     User user;
 
-    @JsonIgnoreProperties({"categories", "user"})
+    @JsonIgnoreProperties({"categories", "user", "posts"})
     @JoinColumn(name = "blogId")
     @ManyToOne
     Blog blog;
 
-    @JsonIgnoreProperties({"categories"})
-    @JoinColumn(name = "categoryId")
-    @ManyToOne
+    @OneToOne
     Category category;
+
+    @JsonIgnoreProperties({"post"})
+    @OneToMany(mappedBy = "post")
+    List<Comment> comments;
 
     public void updateSecurity(String security) {
         this.security = security;

@@ -286,6 +286,7 @@
                         </span>
                     </div>
                     <div class="main-blank-40"></div>
+
                     <!--댓글 작성 부분-->
                     <div class="row">
                         <div class="col-2">
@@ -293,7 +294,7 @@
                         </div>
 
                         <div class="col-4">
-                            <input type="password" class="form-control" id="comment-name">
+                            <input type="text" class="form-control" id="comment-name-{{id}}" maxlength="12">
                         </div>
                     </div>
                     <div class="main-blank-10"></div>
@@ -302,24 +303,28 @@
                             <label for="comment-password" class="form-label">PASSWORD</label>
                         </div>
                         <div class="col-4">
-                            <input type="password" class="form-control" id="comment-password">
+                            <input type="password" class="form-control" id="comment-password-{{id}}" maxlength="12">
                         </div>
                     </div>
                     <div class="main-blank-10"></div>
                     <div class="row">
                         <div class="col-12">
-                            <textarea id="comment-content" class="form-control" rows="3"></textarea>
+                            <textarea id="comment-content-{{id}}" class="form-control" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="main-blank-10"></div>
                     <div class="row">
                         <div class="col-12">
-                            <button type="button" class="btn float-end" style="border-bottom: 1px solid #DDDDDD;" onclick="">W R I T E</button>
+                            <button type="button" class="btn float-end" style="border-bottom: 1px solid #DDDDDD;" onclick="btnCommentWrite({{id}})">W R I T E</button>
                         </div>
                     </div>
                     <!--댓글 작성 끝-->
+
                     <div class="main-blank-10"></div>
                     <!--작성된 댓글 부분-->
+                    <div id="comment-list-{{id}}">
+
+                    </div>
                     <div class="comment-container">
                         <div class="row">
                             <div class="col-12">
@@ -347,6 +352,7 @@
 
     <div style="height: 300px;"></div>
 </main>
-<!--블로그 내용 시작-->
+
+
 
 {{>layout/blog/blog-footer}}
