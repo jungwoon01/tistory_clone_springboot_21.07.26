@@ -10,7 +10,6 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@ToString
 @AllArgsConstructor
 @Getter
 @Builder
@@ -29,12 +28,12 @@ public class Post extends BaseTimeEntity {
 
     String security;
 
-    @JsonIgnoreProperties({"categories"})
+    @JsonIgnoreProperties({"categories", "blogs"})
     @JoinColumn(name = "userId")
     @ManyToOne
     User user;
 
-    @JsonIgnoreProperties({"categories"})
+    @JsonIgnoreProperties({"categories", "user"})
     @JoinColumn(name = "blogId")
     @ManyToOne
     Blog blog;

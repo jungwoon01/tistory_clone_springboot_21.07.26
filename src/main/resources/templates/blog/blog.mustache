@@ -1,0 +1,352 @@
+{{>layout/blog/blog-header}}
+
+<!--summernot api-->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+<style>
+
+    body {
+        background-color: rgb(240, 240, 240);
+    }
+
+    .csm-sidebar-border {
+        border-right: rgb(224, 224, 224) solid 1px;
+        width: 300px;
+        height: 100vh;
+        float: left;
+        position: fixed;
+        top: 0;
+    }
+
+    .blank-100 {
+        clear: both;
+        width: 100%;
+        height: 100px;
+    }
+
+    .blank-sm {
+        clear: both;
+        width: 100%;
+        height: 40px;
+    }
+
+    .blank-xm {
+        clear: both;
+        width: 100%;
+        height: 20px;
+    }
+
+    .sidebar-ul-none {
+        list-style: none;
+    }
+
+    .sidebar-title {
+        color: #1c1f23;
+        text-decoration: none;
+    }
+
+    .sidebar-li {
+        margin-bottom: 6px;
+    }
+
+    .sidebar-text {
+        font-size: 10pt;
+        color: #1c1f23;
+        text-decoration: none;
+    }
+
+    .sidebar-text:hover {
+        color: #0a53be;
+    }
+
+    .color-red {
+        color: #b02a37;
+    }
+
+    .visit-count {
+        font-size: 9pt;
+        padding: 0 4px;
+        text-decoration: none;
+    }
+
+    .main-blank-110 {
+        clear: both;
+        width: 100%;
+        height: 120px;
+    }
+
+    .main-blank-100 {
+        clear: both;
+        width: 100%;
+        height: 100px;
+    }
+
+    .main-blank-40 {
+        clear: both;
+        width: 100%;
+        height: 40px;
+    }
+
+    .main-blank-10 {
+        clear: both;
+        width: 100%;
+        height: 10px;
+    }
+
+    .blog-main-title {
+        color: #1c1f23;
+        padding: 14px;
+        border-bottom: 1px solid rgb(226, 226, 226);
+        text-shadow: 1px 1px 1px #AAAAAA;
+    }
+
+    .post-item-container {
+        background-color: white;
+        border: 1px solid rgb(226, 226, 226);
+        padding: 24px 16px 24px 16px;
+    }
+
+    .post-item-top-border {
+        border-top: 1px solid rgb(226, 226, 226);
+    }
+
+    .post-item {
+        border-bottom: 1px solid rgb(226, 226, 226);
+        padding: 12px 20px;
+    }
+
+    .post-item-title {
+        font-size: 10pt;
+        color: #1c1f23;
+        text-decoration: none;
+    }
+
+    .post-item-date {
+        padding-top: 4px;
+        font-size: 9pt;
+        color: #5a5a5a;
+        text-decoration: none;
+    }
+
+    .post-item-title:hover {
+        text-decoration: #0a53be;
+    }
+
+    .likes-box {
+        border: 1px solid #DDDDDD;
+        padding: 6px 10px;
+        font-size: 9pt;
+        border-radius: 20px;
+    }
+
+    .likes-box-fill {
+        color: #da3f3a;
+    }
+
+    .comment-container {
+        border-top: 2px solid black;
+        border-bottom: 1px solid #DDDDDD;
+        padding: 18px;
+    }
+
+    .btn-comment {
+        margin-left: 10px;
+    }
+
+    .comment-title {
+        font-size: 13pt;
+    }
+
+    .comment-content {
+        font-size: 11pt;
+    }
+
+    .comment-date {
+        font-size: 8pt;
+        color: #999999;
+    }
+</style>
+
+<!--사이드바 시작-->
+<nav>
+    <div class="d-flex flex-column flex-shrink-0 p-3 bg-white csm-sidebar-border">
+
+        <div class="blank-100"></div>
+        <div>
+            <h5 class="text-center"><a class="sidebar-title" href="/">블로그 이름</a></h5>
+        </div>
+        <div class="blank-sm"></div>
+        <div>
+            <ul class="sidebar-ul-none">
+                <li class="sidebar-li"><a class="sidebar-text" href="#">Java<span>(0)</span></a></li>
+                <li class="sidebar-li"><a class="sidebar-text" href="#">git<span>(0)</span></a></li>
+                <li class="sidebar-li"><a class="sidebar-text" href="#">자료구조<span>(0)</span></a></li>
+                <li class="sidebar-li"><a class="sidebar-text" href="#">공부 계획<span>(0)</span></a></li>
+                <li class="sidebar-li"><a class="sidebar-text" href="#">카테고리 목록<span>(0)</span></a></li>
+            </ul>
+        </div>
+        <div class="blank-xm"></div>
+        <div>
+            <ul class="sidebar-ul-none">
+                <li><a class="sidebar-text" href="#">홈</a></li>
+            </ul>
+        </div>
+        <div class="blank-xm"></div>
+
+        <div class="text-center visit-count"><span class="visit-count">0</span>/<span class="visit-count color-red">0</span></div>
+    </div>
+</nav>
+<!--사이드바 끝-->
+
+<!--블로그 내용 시작-->
+<main style="margin-left: 324px;">
+    <div class="container-xxl">
+
+        <!--카테고리 이름-->
+        <div class="row"><div class="col-xxl-9 align-self-center main-blank-110 align-self-center"></div></div>
+        <div class="row">
+            <div class="col-xxl-9 align-self-center "><h5 class="text-center"><span class="blog-main-title">카테고리 이름</span></h5></div>
+        </div>
+        <div class="row"><div class="col-xxl-9 align-self-center main-blank-40"></div></div>
+
+        <!--post 목록 시작-->
+        <div class="row">
+            <div class="col-xxl-9 align-self-center">
+                <div class="post-item-container">
+                    <!--목록 제일 위 테두리-->
+                    <div class="row">
+                        <div class="col-xxl-12 align-self-center">
+                            <div class="post-item-top-border"></div>
+                        </div>
+                    </div>
+                    <!--post item-->
+                    {{#posts}}
+                    <div class="row">
+                        <div class="col-xxl-12 align-self-center">
+                            <div class="post-item">
+                                <a href="#" class="post-item-title">{{title}}</a><span class="float-end post-item-date">{{createdDate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {{/posts}}
+                </div>
+            </div>
+        </div>
+        <!--post 목록 끝-->
+
+        {{#posts}}
+        <!--post 제목-->
+        <div class="row"><div class="col-xxl-9 align-self-center main-blank-110 align-self-center"></div></div>
+        <div class="row">
+            <div class="col-xxl-9 align-self-center "><h5 class="text-center"><span class="blog-main-title">{{title}}</span></h5></div>
+        </div>
+        <div class="row"><div class="col-xxl-9 align-self-center main-blank-40"></div></div>
+
+        <!--post 작성일-->
+        <div class="row">
+            <div class="col-xxl-9 align-self-center" style="padding-bottom: 10px;">
+                <span class="float-end post-item-date">{{createdDate}}</span>
+            </div>
+        </div>
+
+        <!--post 내용-->
+        <div class="row">
+            <div class="col-xxl-9 align-self-center">
+                <div class="post-item-container">
+                    <!--post 내용-->
+                    <div id="board_content">
+                        {{{content}}}
+                    </div>
+                    <div class="main-blank-100"></div>
+                    <!--공감/수정 버튼-->
+                    <div class="text-center">
+                        <span class="likes-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                            </svg>
+                            &nbsp;공감&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                            </svg>
+                            &nbsp;수정
+                        </span>
+                    </div>
+                    <div class="main-blank-10"></div>
+                    <div class="text-center">
+                        <span class="likes-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill likes-box-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                            </svg>
+                            &nbsp;10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                            </svg>
+                            &nbsp;수정
+                        </span>
+                    </div>
+                    <div class="main-blank-40"></div>
+                    <!--댓글 작성 부분-->
+                    <div class="row">
+                        <div class="col-2">
+                            <label for="comment-name" class="form-label">NAME</label>
+                        </div>
+
+                        <div class="col-4">
+                            <input type="password" class="form-control" id="comment-name">
+                        </div>
+                    </div>
+                    <div class="main-blank-10"></div>
+                    <div class="row">
+                        <div class="col-2">
+                            <label for="comment-password" class="form-label">PASSWORD</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="password" class="form-control" id="comment-password">
+                        </div>
+                    </div>
+                    <div class="main-blank-10"></div>
+                    <div class="row">
+                        <div class="col-12">
+                            <textarea id="comment-content" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="main-blank-10"></div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="button" class="btn float-end" style="border-bottom: 1px solid #DDDDDD;" onclick="">W R I T E</button>
+                        </div>
+                    </div>
+                    <!--댓글 작성 끝-->
+                    <div class="main-blank-10"></div>
+                    <!--작성된 댓글 부분-->
+                    <div class="comment-container">
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="comment-title">댓글작성인<span class="float-end comment-date">2021.12.12 12:00</span></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="comment-content">댓글 내용</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <button class="float-end btn btn-sm btn-comment">Reply</button><button class="float-end btn btn-sm btn-comment">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--작성된 댓글 부분-->
+                </div>
+            </div>
+        </div>
+        {{/posts}}
+
+    </div>
+
+    <div style="height: 300px;"></div>
+</main>
+<!--블로그 내용 시작-->
+
+{{>layout/blog/blog-footer}}

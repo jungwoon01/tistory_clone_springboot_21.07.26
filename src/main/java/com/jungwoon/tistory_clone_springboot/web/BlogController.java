@@ -4,6 +4,7 @@ import com.jungwoon.tistory_clone_springboot.service.BlogService;
 import com.jungwoon.tistory_clone_springboot.service.PostService;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndCategoryRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndPostsRespDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.post.PostListRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostRespDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.parameters.P;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -63,5 +66,16 @@ public class BlogController {
         model.addAttribute("post", postRespDto);
 
         return "blog/manage-updatepost";
+    }
+
+    // 블로그 페이지
+    @GetMapping("/{url}")
+    public String blog(@PathVariable String url, Model model) {
+
+        List<PostListRespDto> postListRespDto = postService.posts(url);
+
+        model.addAttribute("posts", postListRespDto);
+
+        return "blog/blog";
     }
 }

@@ -77,9 +77,12 @@ public class PostService {
         posts.forEach(post -> {
             postListRespDtos.add(PostListRespDto.builder()
                     .title(post.getTitle())
-                    .category(post.getCategory().getName())
+                    .content(post.getContent())
+                    .category(post.getCategory() == null ? "카테고리 없음" : post.getCategory().getName())
                     .security(post.getSecurity())
                     .userNickname(post.getUser().getNickname())
+                    .createdDate(post.getCreatedDate())
+                    .modifiedDate(post.getModifiedDate())
                     .build()
             );
         });

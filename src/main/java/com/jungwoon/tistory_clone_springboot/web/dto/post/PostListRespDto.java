@@ -12,8 +12,10 @@ import java.time.LocalDateTime;
 public class PostListRespDto {
     private Long id;
     private String title;
+    private String content;
     private String security;
     private String userNickname;
     private String category;
-    private LocalDateTime localDateTime;
+    private LocalDateTime modifiedDate;
+    private LocalDateTime createdDate;
 }
