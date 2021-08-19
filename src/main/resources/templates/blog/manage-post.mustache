@@ -102,7 +102,8 @@
     // 글 공개/비공개 변경
     function btnUpdatePostSecurity(id) {
         let security = $('#'+id).text();
-        let postId = Number(id.charAt(id.length - 1)); // post id
+        let idArr = id.split('-');
+        let postId = Number(idArr[idArr.length - 1]); // post id
 
         if(security == "공개") {
             security = String("비공개");
@@ -127,8 +128,8 @@
 
     // 수정 버튼
     function btnUpdatePost(id) {
-
-        let postId = Number(id.charAt(id.length - 1)); // post id
+        let idArr = id.split('-');
+        let postId = Number(idArr[idArr.length - 1]); // post id
 
         var form = document.createElement('form');
         form.setAttribute('method', 'get');
@@ -151,7 +152,8 @@
     function btnChkDeletePost() {
 
         let id = $('#chosen-post-id').text();
-        let postId = Number(id.charAt(id.length - 1)); // post id
+        let idArr = id.split('-');
+        let postId = Number(idArr[idArr.length - 1]); // post id
 
         $.ajax({
             type:"delete",

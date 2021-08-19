@@ -381,7 +381,8 @@
         // 카테고리 인풋 value 가져오기
         let categoryVal = $('#category-input').val();
         // item 인덱스 가져오기
-        let index = id.charAt(id.length-1);
+        let idArr = id.split('-');
+        let index = Number(idArr[idArr.length - 1]); // post id
         // 지우는 부분
         categoryList.remove(categoryList.get(index));
 
@@ -400,7 +401,8 @@
         // 카테고리 인풋 value 가져오기
         let categoryVal = $('#category-input').val();
         // item 인덱스 가져오기
-        let index = Number(id.charAt(id.length-1));
+        let idArr = id.split('-');
+        let index = Number(idArr[idArr.length - 1]); // post id
 
         // 우선순위 변경
         categoryList.dataStore[index+1].priority -= 1;
@@ -421,7 +423,8 @@
         // 카테고리 인풋 value 가져오기
         let categoryVal = $('#category-input').val();
         // item 인덱스 가져오기
-        let index = Number(id.charAt(id.length-1));
+        let idArr = id.split('-');
+        let index = Number(idArr[idArr.length - 1]); // post id
 
         // 우선순위 변경
         categoryList.dataStore[index-1].priority += 1;
