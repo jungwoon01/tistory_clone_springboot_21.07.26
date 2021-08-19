@@ -40,7 +40,9 @@ public class Post extends BaseTimeEntity {
     @ManyToOne
     Blog blog;
 
-    @OneToOne
+    @JsonIgnoreProperties({"categories", "blog", "posts"})
+    @JoinColumn(name = "categoryId")
+    @ManyToOne
     Category category;
 
     @JsonIgnoreProperties({"post"})

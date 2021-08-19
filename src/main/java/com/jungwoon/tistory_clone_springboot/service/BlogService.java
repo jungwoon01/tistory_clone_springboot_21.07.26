@@ -3,19 +3,22 @@ package com.jungwoon.tistory_clone_springboot.service;
 import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.blog.BlogRepository;
+import com.jungwoon.tistory_clone_springboot.domain.category.Category;
+import com.jungwoon.tistory_clone_springboot.domain.category.CategoryRepository;
 import com.jungwoon.tistory_clone_springboot.domain.post.Post;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomValidationException;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndCategoryRespDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndPostsRespDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogCreateRequestDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.blog.*;
+import com.jungwoon.tistory_clone_springboot.web.dto.category.CategoryAndPostCountRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.user.UserBlogCountDto;
 import lombok.RequiredArgsConstructor;
+import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,8 @@ import java.util.List;
 public class BlogService {
 
     private final BlogRepository blogRepository;
+    private final CategoryRepository categoryRepository;
+    private final EntityManager em; // 모든 Repository 는 EntityManager 를 구현해서 만들어 있는 구현체
 
     // 블로그 생성
     @Transactional
@@ -126,5 +131,54 @@ public class BlogService {
                 .build();
 
         return dto;
+    }
+
+
+    // blog url 로 선택된 블로그의 블로그 정보와 카테고리 정보를 리턴
+    @Transactional(readOnly = true)
+    public void selectedCategoryBlog(String url, String category) {
+        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
+            throw new CustomException("존재하지 않는 블로그 주소입니다.");
+        });
+
+        List<Category> categories = categoryRepository.findAllByBlogId(blogEntity.getId());
+
+        int a = categories.get(1).getPosts().size();
+    }
+
+    // 블로그 사이드바에 필요한 데이터를 리턴하는 메소드
+    @Transactional
+    public BlogSidebarRespDto blogSidebar(String url) {
+
+        // 쿼리 준비
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT c.id as id, c.name as name, COUNT(p.id) as postCount ");
+        sb.append("FROM category c INNER JOIN post p ");
+        sb.append("ON c.id = p.categoryId ");
+        sb.append("WHERE c.blogId = (SELECT id FROM blog WHERE url = ?) ");
+        sb.append("AND p.security = '공개' AND c.security = '공개' ");
+        sb.append("GROUP BY p.categoryId ");
+        sb.append("ORDER BY c.priorityNum ASC");
+
+        // 물음표 = url
+
+        // 쿼리 완성
+        Query query = em.createNativeQuery(sb.toString())
+                .setParameter(1, url);
+
+        // 쿼리 실행(qlrm 라이브러리 필요 - Dto 에 DB 결과를 매핑하기 위해서)
+        JpaResultMapper resultMapper = new JpaResultMapper();
+        List<CategoryAndPostCountRespDto> categoryAndPostCountRespDtos = resultMapper.list(query, CategoryAndPostCountRespDto.class);
+
+        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
+            throw new CustomException("존재하지 않는 블로그 주소입니다.");
+        });
+
+        return BlogSidebarRespDto.builder()
+                .id(blogEntity.getId())
+                .name(blogEntity.getName())
+                .url(blogEntity.getUrl())
+                .categories(categoryAndPostCountRespDtos)
+                .build();
     }
 }

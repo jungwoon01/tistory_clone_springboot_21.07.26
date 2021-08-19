@@ -6,7 +6,7 @@ import com.jungwoon.tistory_clone_springboot.service.CategoryService;
 import com.jungwoon.tistory_clone_springboot.service.PostService;
 import com.jungwoon.tistory_clone_springboot.web.dto.CMResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogListResponseDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.CategorySaveRequestDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.category.CategorySaveRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostCreateRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostUpdateRequestDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.SecurityUpdateRequestDto;

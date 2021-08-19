@@ -175,22 +175,21 @@
 
         <div class="blank-100"></div>
         <div>
-            <h5 class="text-center"><a class="sidebar-title" href="/">블로그 이름</a></h5>
+            <h5 class="text-center"><a class="sidebar-title" href="/{{blog.url}}">{{blog.name}}</a></h5>
         </div>
         <div class="blank-sm"></div>
         <div>
             <ul class="sidebar-ul-none">
-                <li class="sidebar-li"><a class="sidebar-text" href="#">Java<span>(0)</span></a></li>
-                <li class="sidebar-li"><a class="sidebar-text" href="#">git<span>(0)</span></a></li>
-                <li class="sidebar-li"><a class="sidebar-text" href="#">자료구조<span>(0)</span></a></li>
-                <li class="sidebar-li"><a class="sidebar-text" href="#">공부 계획<span>(0)</span></a></li>
-                <li class="sidebar-li"><a class="sidebar-text" href="#">카테고리 목록<span>(0)</span></a></li>
+                {{#blog.categories}}
+                <li class="sidebar-li"><a class="sidebar-text" href="/{{blog.url}}/category/{{id}}">{{name}} <span>({{postCount}})</span></a></li>
+                {{/blog.categories}}
             </ul>
         </div>
         <div class="blank-xm"></div>
         <div>
             <ul class="sidebar-ul-none">
-                <li><a class="sidebar-text" href="#">홈</a></li>
+                <li><a class="sidebar-text" href="/{{blog.url}}">홈</a></li>
+                <li><a class="sidebar-text" href="/">티스토리 메인</a></li>
             </ul>
         </div>
         <div class="blank-xm"></div>
@@ -207,7 +206,7 @@
         <!--카테고리 이름-->
         <div class="row"><div class="col-xxl-9 align-self-center main-blank-110 align-self-center"></div></div>
         <div class="row">
-            <div class="col-xxl-9 align-self-center "><h5 class="text-center"><span class="blog-main-title">카테고리 이름</span></h5></div>
+            <div class="col-xxl-9 align-self-center "><h5 class="text-center"><span class="blog-main-title">{{category}}</span></h5></div>
         </div>
         <div class="row"><div class="col-xxl-9 align-self-center main-blank-40"></div></div>
 
@@ -257,7 +256,7 @@
                 <div class="post-item-container">
                     <!--post 내용-->
                     <div id="board_content">
-                        {{{content}}}
+                    {{{content}}}
                     </div>
                     <div class="main-blank-100"></div>
                     <!--공감/수정 버튼-->
@@ -324,7 +323,7 @@
                     <div class="main-blank-10"></div>
                     <!--작성된 댓글 부분-->
                     <div id="comment-list-{{id}}">
-                        {{#comments}}
+                    {{#comments}}
                         <div id="comment-item-{{id}}" class="comment-container">
                             <div class="row">
                                 <div class="col-12">

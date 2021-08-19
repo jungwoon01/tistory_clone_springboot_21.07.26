@@ -153,15 +153,39 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostAndCommentRespDto> postsAndComments(String url) {
 
-        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
-            throw new CustomException("현재 주소의 블로그를 찾을 수 없습니다.");
-        });
-
-        List<Post> posts = blogEntity.getPosts();
+        List<Post> postEntities = postRepository.mFindAllByBlogUrl(url);
 
         List<PostAndCommentRespDto> postAndCommentRespDtos = new ArrayList<>();
 
-        posts.forEach(post -> {
+        postEntities.forEach(post -> {
+            postAndCommentRespDtos.add(PostAndCommentRespDto.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .security(post.getSecurity())
+                    .createdDate(post.getCreatedDate())
+                    .modifiedDate(post.getModifiedDate())
+                    .comments(getCommentsRespDtoInPost(post))
+                    .build()
+            );
+        });
+
+        return postAndCommentRespDtos;
+    }
+
+    // 블로그에 대한 선택 카테고리 글 리스트 리턴
+    @Transactional(readOnly = true)
+    public List<PostAndCommentRespDto> postsAndComments(String url, Long categoryId) {
+
+        List<Post> postEntities = postRepository.mFindAllByCategoryIdAndBlogUrl(categoryId, url);
+
+        if(postEntities == null || postEntities.size() == 0) {
+            throw new CustomException("잘못된 블로그와 카테고리 주소 입니다.");
+        }
+
+        List<PostAndCommentRespDto> postAndCommentRespDtos = new ArrayList<>();
+
+        postEntities.forEach(post -> {
             postAndCommentRespDtos.add(PostAndCommentRespDto.builder()
                     .id(post.getId())
                     .title(post.getTitle())

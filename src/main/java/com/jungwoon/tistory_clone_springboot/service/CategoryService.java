@@ -6,7 +6,7 @@ import com.jungwoon.tistory_clone_springboot.domain.blog.BlogRepository;
 import com.jungwoon.tistory_clone_springboot.domain.category.Category;
 import com.jungwoon.tistory_clone_springboot.domain.category.CategoryRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.CategorySaveRequestDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.category.CategorySaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,5 +43,14 @@ public class CategoryService {
                 categoryRepository.save(categoryEntity);
             }
         });
+    }
+
+    @Transactional(readOnly = true)
+    public String categoryName(Long categoryId) {
+        Category categoryEntity = categoryRepository.findById(categoryId).orElseThrow(() -> {
+            throw new CustomException("존재하는 카테고리 페이지가 아닙니다.");
+        });
+
+        return categoryEntity.getName();
     }
 }

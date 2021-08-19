@@ -1,4 +1,4 @@
-package com.jungwoon.tistory_clone_springboot.web.dto.blog;
+package com.jungwoon.tistory_clone_springboot.web.dto.category;
 
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.category.Category;

@@ -1,10 +1,13 @@
 package com.jungwoon.tistory_clone_springboot.domain.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jungwoon.tistory_clone_springboot.domain.BaseTimeEntity;
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
+import com.jungwoon.tistory_clone_springboot.domain.post.Post;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Builder
 @ToString
@@ -28,6 +31,10 @@ public class Category extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Integer priorityNum;
+
+    @JsonIgnoreProperties({"category"})
+    @OneToMany(mappedBy = "category")
+    private List<Post> posts;
 
     public Category update(String name, String security, Integer priorityNum) {
         this.name = name;

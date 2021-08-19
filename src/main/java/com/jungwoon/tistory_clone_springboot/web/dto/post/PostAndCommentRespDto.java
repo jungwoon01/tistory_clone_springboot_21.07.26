@@ -14,6 +14,7 @@ public class PostAndCommentRespDto {
     private String title;
     private String content;
     private String security;
+    private String category;
     private LocalDateTime modifiedDate;
     private LocalDateTime createdDate;
     private List<CommentRespDto> comments;
