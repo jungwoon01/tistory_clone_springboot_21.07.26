@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 public class CommentRespDto {
@@ -32,5 +33,13 @@ public class CommentRespDto {
         this.postId = comment.getPost().getId();
         this.createdDate = comment.getCreatedDate();
         this.modifiedDate = comment.getModifiedDate();
+    }
+
+    public String getCreatedDate() {
+        return this.createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public String getModifiedDate() {
+        return this.createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 }

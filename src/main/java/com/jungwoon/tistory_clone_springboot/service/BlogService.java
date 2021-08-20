@@ -119,6 +119,7 @@ public class BlogService {
                     .category(post.getCategory() != null ? post.getCategory().getName() : "카테고리 없음")
                     .security(post.getSecurity())
                     .userNickname(post.getUser().getNickname())
+                    .createdDate(post.getCreatedDate())
                     .build()
             );
         });

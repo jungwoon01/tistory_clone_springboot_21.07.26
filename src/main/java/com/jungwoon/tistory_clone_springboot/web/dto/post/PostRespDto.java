@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 public class PostRespDto {
@@ -42,5 +43,13 @@ public class PostRespDto {
         this.categoryId = post.getCategory() == null ? 0 : post.getCategory().getId();
         this.modifiedDate = post.getModifiedDate();
         this.createdDate = post.getCreatedDate();
+    }
+
+    public String getCreatedDate() {
+        return this.createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public String getModifiedDate() {
+        return this.createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 }

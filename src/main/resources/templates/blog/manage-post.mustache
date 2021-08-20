@@ -19,7 +19,7 @@
 <div class="row justify-content-center">
     <div class="col-12">
         <h5 class="" style="display: inline">글 관리</h5>
-        <button class="btn float-end btn-outline-dark btn-sm" style="border-radius: 0px;">글 쓰기</button>
+        <button class="btn float-end btn-outline-dark btn-sm" style="border-radius: 0px;" onclick="location.href='/{{blog.url}}/manage/newpost'">글 쓰기</button>
     </div>
 </div>
 <div class="row">
@@ -45,7 +45,7 @@
                         <div>
                             <a style="font-size: 10pt; color: #FF5010; margin: 0 18px 0 0; padding: 0; display: inline;">{{category}}</a>
                             <p style="font-size: 10pt; color: #888888; margin: 0 18px 0 0; padding: 0; display: inline;">{{userNickname}}</p>
-                            <p style="font-size: 10pt; color: #888888; margin: 0 18px 0 0; padding: 0; display: inline;">작성 날짜</p>
+                            <p style="font-size: 10pt; color: #888888; margin: 0 18px 0 0; padding: 0; display: inline;">{{createdDate}}</p>
                         </div>
                     </div>
                     <div class="col-4" style="padding-top: 8px;">

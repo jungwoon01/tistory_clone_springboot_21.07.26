@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Builder
@@ -18,4 +19,12 @@ public class PostAndCommentRespDto {
     private LocalDateTime modifiedDate;
     private LocalDateTime createdDate;
     private List<CommentRespDto> comments;
+
+    public String getCreatedDate() {
+        return this.createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public String getModifiedDate() {
+        return this.createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
 }
