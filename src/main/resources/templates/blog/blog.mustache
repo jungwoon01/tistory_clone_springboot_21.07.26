@@ -167,6 +167,10 @@
         font-size: 8pt;
         color: #999999;
     }
+
+    .no-post {
+        padding: 20px;
+    }
 </style>
 
 <!--사이드바 시작-->
@@ -221,6 +225,7 @@
                         </div>
                     </div>
                     <!--post item-->
+                    <!--등록된 글이 있을 때-->
                     {{#posts}}
                     <div class="row">
                         <div class="col-xxl-12 align-self-center">
@@ -229,6 +234,16 @@
                             </div>
                         </div>
                     </div>
+                    {{/posts}}
+                    <!--등록된 글이 없을 때-->
+                    {{^posts}}
+                        <div class="row">
+                            <div class="col-xxl-12">
+                                <div class="text-center post-item no-post">
+                                    <h5>등록된 글이 없습니다.</h5>
+                                </div>
+                            </div>
+                        </div>
                     {{/posts}}
                 </div>
             </div>
@@ -352,7 +367,6 @@
             </div>
         </div>
         {{/posts}}
-
     </div>
 
     <div style="height: 300px;"></div>

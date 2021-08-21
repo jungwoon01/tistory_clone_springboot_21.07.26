@@ -111,7 +111,6 @@ public class BlogService {
 
         List<Post> posts = blogEntity.getPosts();
 
-
         posts.forEach(post -> {
             postRespDtos.add(PostRespDto.builder()
                     .id(post.getId())
@@ -134,31 +133,17 @@ public class BlogService {
         return dto;
     }
 
-
-    // blog url 로 선택된 블로그의 블로그 정보와 카테고리 정보를 리턴
-    @Transactional(readOnly = true)
-    public void selectedCategoryBlog(String url, String category) {
-        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
-            throw new CustomException("존재하지 않는 블로그 주소입니다.");
-        });
-
-        List<Category> categories = categoryRepository.findAllByBlogId(blogEntity.getId());
-
-        int a = categories.get(1).getPosts().size();
-    }
-
     // 블로그 사이드바에 필요한 데이터를 리턴하는 메소드
     @Transactional
     public BlogSidebarRespDto blogSidebar(String url) {
 
         // 쿼리 준비
         StringBuffer sb = new StringBuffer();
-        sb.append("SELECT c.id as id, c.name as name, COUNT(p.id) as postCount ");
-        sb.append("FROM category c INNER JOIN post p ");
-        sb.append("ON c.id = p.categoryId ");
+        sb.append("SELECT c.id AS id, c.name AS name, ");
+        sb.append("(SELECT COUNT(*) FROM post WHERE categoryId = c.id AND SECURITY = '공개') AS postCount ");
+        sb.append("FROM category c ");
         sb.append("WHERE c.blogId = (SELECT id FROM blog WHERE url = ?) ");
-        sb.append("AND p.security = '공개' AND c.security = '공개' ");
-        sb.append("GROUP BY p.categoryId ");
+        sb.append("AND c.security = '공개' ");
         sb.append("ORDER BY c.priorityNum ASC");
 
         // 물음표 = url

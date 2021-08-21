@@ -179,10 +179,6 @@ public class PostService {
 
         List<Post> postEntities = postRepository.mFindAllByCategoryIdAndBlogUrl(categoryId, url);
 
-        if(postEntities == null || postEntities.size() == 0) {
-            throw new CustomException("잘못된 블로그와 카테고리 주소 입니다.");
-        }
-
         List<PostAndCommentRespDto> postAndCommentRespDtos = new ArrayList<>();
 
         postEntities.forEach(post -> {
