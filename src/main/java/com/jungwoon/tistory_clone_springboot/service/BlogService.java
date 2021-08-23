@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,7 +137,7 @@ public class BlogService {
 
     // 블로그 사이드바에 필요한 데이터를 리턴하는 메소드
     @Transactional
-    public BlogSidebarRespDto blogSidebar(String url) {
+    public BlogSidebarRespDto blogSidebar(String url, HttpSession httpSession) {
 
         // 쿼리 준비
         StringBuffer sb = new StringBuffer();
@@ -161,11 +162,18 @@ public class BlogService {
             throw new CustomException("존재하지 않는 블로그 주소입니다.");
         });
 
+        // 블로그 호스트인지 아닌지 판별
+        boolean isHost = false;
+        if(httpSession.getAttribute("principal") != null) {
+            isHost = blogEntity.getId().equals(((PrincipalDetails) httpSession.getAttribute("principal")).getUser().getId());
+        }
+
         return BlogSidebarRespDto.builder()
                 .id(blogEntity.getId())
                 .name(blogEntity.getName())
                 .url(blogEntity.getUrl())
                 .categories(categoryAndPostCountRespDtos)
+                .isHost(isHost)
                 .build();
     }
 }

@@ -11,12 +11,18 @@ import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.domain.user.UserRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomApiException;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
+import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogSidebarRespDto;
+import com.jungwoon.tistory_clone_springboot.web.dto.category.CategoryAndPostCountRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.comment.CommentRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.*;
 import lombok.RequiredArgsConstructor;
+import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +33,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final BlogRepository blogRepository;
     private final CategoryRepository categoryRepository;
+    private final EntityManager em; // 모든 Repository 는 EntityManager 를 구현해서 만들어 있는 구현체
 
     // post 작성 서비스
     @Transactional
@@ -151,50 +158,37 @@ public class PostService {
 
     // 블로그에 대한 글 리스트 리턴
     @Transactional(readOnly = true)
-    public List<PostAndCommentRespDto> postsAndComments(String url) {
+    public List<PostAndLikesRespDto> posts(String url, HttpSession httpSession) {
 
-        List<Post> postEntities = postRepository.mFindAllByBlogUrl(url);
+        // 쿼리 준비
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT p.*, ");
+        sb.append("(SELECT EXISTS (SELECT * FROM likes WHERE postId = p.id AND userId = ?)) AS isLikes, ");
+        sb.append("(SELECT COUNT(*) FROM likes WHERE postId = p.id) AS likesCount ");
+        sb.append("FROM post p ");
+        sb.append("WHERE p.blogId = (SELECT id FROM blog WHERE url=?) ");
+        sb.append("AND p.security = '공개' ");
+        sb.append("ORDER BY p.createdDate DESC");
 
-        List<PostAndCommentRespDto> postAndCommentRespDtos = new ArrayList<>();
+        // 물음표
+        // 1. : userId
+        // 2. : url
 
-        postEntities.forEach(post -> {
-            postAndCommentRespDtos.add(PostAndCommentRespDto.builder()
-                    .id(post.getId())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .security(post.getSecurity())
-                    .createdDate(post.getCreatedDate())
-                    .modifiedDate(post.getModifiedDate())
-                    .comments(getCommentsRespDtoInPost(post))
-                    .build()
-            );
-        });
+        Long userId = 0L;
+        if(httpSession.getAttribute("principal") != null) {
+            userId = ((PrincipalDetails)httpSession.getAttribute("principal")).getUser().getId();
+        }
 
-        return postAndCommentRespDtos;
-    }
+        // 쿼리 완성
+        Query query = em.createNativeQuery(sb.toString())
+                .setParameter(1, userId)
+                .setParameter(2, url);
 
-    // 블로그에 대한 선택 카테고리 글 리스트 리턴
-    @Transactional(readOnly = true)
-    public List<PostAndCommentRespDto> postsAndComments(String url, Long categoryId) {
+        // 쿼리 실행(qlrm 라이브러리 필요 - Dto 에 DB 결과를 매핑하기 위해서)
+        JpaResultMapper resultMapper = new JpaResultMapper();
+        List<PostAndLikesRespDto> postAndLikesRespDtos = resultMapper.list(query, PostAndLikesRespDto.class);
 
-        List<Post> postEntities = postRepository.mFindAllByCategoryIdAndBlogUrl(categoryId, url);
-
-        List<PostAndCommentRespDto> postAndCommentRespDtos = new ArrayList<>();
-
-        postEntities.forEach(post -> {
-            postAndCommentRespDtos.add(PostAndCommentRespDto.builder()
-                    .id(post.getId())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .security(post.getSecurity())
-                    .createdDate(post.getCreatedDate())
-                    .modifiedDate(post.getModifiedDate())
-                    .comments(getCommentsRespDtoInPost(post))
-                    .build()
-            );
-        });
-
-        return postAndCommentRespDtos;
+        return postAndLikesRespDtos;
     }
 
     // 글에 대한 댓글 리스트 리턴

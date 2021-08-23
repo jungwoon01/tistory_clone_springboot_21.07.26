@@ -14,5 +14,6 @@ public class BlogSidebarRespDto {
     private Long id;
     private String name;
     private String url;
+    private Boolean isHost;
     private List<CategoryAndPostCountRespDto> categories;
 }

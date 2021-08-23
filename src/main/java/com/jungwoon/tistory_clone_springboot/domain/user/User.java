@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.util.List;
 
 @Builder
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -55,5 +54,17 @@ public class User extends BaseTimeEntity {
     public void signUp(String nickname) {
         this.nickname = nickname;
         this.role = Role.USER;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", registrationId='" + registrationId + '\'' +
+                ", attributesId='" + attributesId + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                ", nickname='" + nickname + '\'' +
+                '}';
     }
 }
