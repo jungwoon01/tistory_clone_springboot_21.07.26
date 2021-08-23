@@ -4,7 +4,6 @@ import com.jungwoon.tistory_clone_springboot.config.oauth.dto.PrincipalDetails;
 import com.jungwoon.tistory_clone_springboot.domain.likes.Likes;
 import com.jungwoon.tistory_clone_springboot.domain.likes.LikesRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomApiException;
-import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +28,7 @@ public class LikesService {
     // 좋아요 취소
     @Transactional
     public void deleteLikes(PrincipalDetails principalDetails, Long postId) {
-        Likes likesEntity = likesRepository.findByIdAndUserId(principalDetails.getUser().getId(), postId);
+        Likes likesEntity = likesRepository.findLikesByIdAndUserId(principalDetails.getUser().getId(), postId);
 
         if(likesEntity == null) {
             throw new CustomApiException("존재하지 않는 좋아요 입니다");

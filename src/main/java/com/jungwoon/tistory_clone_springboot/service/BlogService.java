@@ -6,6 +6,7 @@ import com.jungwoon.tistory_clone_springboot.domain.blog.BlogRepository;
 import com.jungwoon.tistory_clone_springboot.domain.category.Category;
 import com.jungwoon.tistory_clone_springboot.domain.category.CategoryRepository;
 import com.jungwoon.tistory_clone_springboot.domain.post.Post;
+import com.jungwoon.tistory_clone_springboot.domain.post.PostRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomValidationException;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.*;
@@ -27,7 +28,7 @@ import java.util.List;
 public class BlogService {
 
     private final BlogRepository blogRepository;
-    private final CategoryRepository categoryRepository;
+    private final PostRepository postRepository;
     private final EntityManager em; // 모든 Repository 는 EntityManager 를 구현해서 만들어 있는 구현체
 
     // 블로그 생성
@@ -109,8 +110,8 @@ public class BlogService {
 
         List<PostRespDto> postRespDtos = new ArrayList<>();
 
-        List<Post> posts = blogEntity.getPosts();
-
+        List<Post> posts = postRepository.mFindAllByBlogUrl(url);
+        
         posts.forEach(post -> {
             postRespDtos.add(PostRespDto.builder()
                     .id(post.getId())

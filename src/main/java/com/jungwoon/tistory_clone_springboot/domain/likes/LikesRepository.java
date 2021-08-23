@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface LikesRepository extends JpaRepository<Likes, Long> {
 
     @Modifying
-    @Query(value = "CREATE INTO likes(userId, postId, createdDate, modifiedDate) value (:userId, :postId, now(), now())", nativeQuery = true)
+    @Query(value = "INSERT INTO likes(userId, postId, createdDate, modifiedDate) VALUES(:userId, :postId, now(), now())", nativeQuery = true)
     void mSave(Long userId, Long postId);
 
-    Likes findByIdAndUserId(Long id, Long userId);
+    Likes findLikesByIdAndUserId(Long id, Long userId);
 }
