@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,7 @@ public class LikesApiController {
 
     private final LikesService likesService;
 
-    @PostMapping("/api/likes")
+    @PostMapping("/api/likes/like")
     public ResponseEntity<?> newLikes(@AuthenticationPrincipal PrincipalDetails principalDetails, Long postId) {
 
         likesService.newLikes(principalDetails, postId);
@@ -24,7 +25,7 @@ public class LikesApiController {
         return new ResponseEntity<> (new CMResponseDto(1, "글 좋아요 성공", null), HttpStatus.CREATED);
     }
 
-    @PostMapping("/api/unlikes")
+    @DeleteMapping("/api/likes/unlike")
     public ResponseEntity<?> unlikes(@AuthenticationPrincipal PrincipalDetails principalDetails, Long postId) {
 
         likesService.deleteLikes(principalDetails, postId);

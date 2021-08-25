@@ -10,5 +10,5 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
     @Query(value = "INSERT INTO likes(userId, postId, createdDate, modifiedDate) VALUES(:userId, :postId, now(), now())", nativeQuery = true)
     void mSave(Long userId, Long postId);
 
-    Likes findLikesByIdAndUserId(Long id, Long userId);
+    Likes findLikesByUserIdAndPostId(Long id, Long postId);
 }

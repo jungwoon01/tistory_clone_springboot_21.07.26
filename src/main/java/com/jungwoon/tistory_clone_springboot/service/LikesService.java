@@ -28,7 +28,7 @@ public class LikesService {
     // 좋아요 취소
     @Transactional
     public void deleteLikes(PrincipalDetails principalDetails, Long postId) {
-        Likes likesEntity = likesRepository.findLikesByIdAndUserId(principalDetails.getUser().getId(), postId);
+        Likes likesEntity = likesRepository.findLikesByUserIdAndPostId(principalDetails.getUser().getId(), postId);
 
         if(likesEntity == null) {
             throw new CustomApiException("존재하지 않는 좋아요 입니다");
