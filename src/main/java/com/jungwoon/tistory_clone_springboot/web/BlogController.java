@@ -1,6 +1,7 @@
 package com.jungwoon.tistory_clone_springboot.web;
 
 import com.jungwoon.tistory_clone_springboot.service.BlogService;
+import com.jungwoon.tistory_clone_springboot.service.CategoryService;
 import com.jungwoon.tistory_clone_springboot.service.PostService;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndCategoryRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndPostsRespDto;
@@ -20,6 +21,7 @@ public class BlogController {
 
     private final BlogService blogService;
     private final PostService postService;
+    private final CategoryService categoryService;
     private final HttpSession httpSession;
 
     // 블로그 글 관리 페이지
@@ -78,18 +80,16 @@ public class BlogController {
         return "blog/blog";
     }
 
-/*    // 블로그 카테고리별 페이지
+    // 블로그 카테고리별 페이지
     @GetMapping("/{url}/category/{categoryId}")
     public String selectedCategoryBlog(@PathVariable String url, @PathVariable Long categoryId, Model model) {
 
-        BlogSidebarRespDto blogAndCategoryRespDto = blogService.blogSidebar(url);
-//        List<PostAndCommentRespDto> dto = postService.postsAndComments(url, categoryId);
+        BlogSidebarRespDto blogAndCategoryRespDto = blogService.blogSidebar(url, httpSession);
         String categoryName = categoryService.categoryName(categoryId);
 
         model.addAttribute("blog", blogAndCategoryRespDto);
-//        model.addAttribute("posts", dto);
         model.addAttribute("category", categoryName);
 
         return "blog/blog";
-    }*/
+    }
 }

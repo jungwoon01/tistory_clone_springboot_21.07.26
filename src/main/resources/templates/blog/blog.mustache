@@ -297,7 +297,7 @@
             let data = res.data;
 
             data.forEach(post => {
-                $('#post-list').append(postItem(post.id, post.title, post.content, post.createdDate, sympathyAndModifyItem(post.isLikes, post.likesCount, {{blog.isHost}})));
+                $('#post-list').append(postItem(post.id, post.title, post.content, post.createdDate, sympathyAndModifyItem(post.isLikes, post.likesCount, {{blog.isHost}}), post.comments));
             })
 
         }).fail(error => {
@@ -518,8 +518,8 @@
     }
 
     // 글 item 템플릿 리턴
-    function postItem(id, title, content, createdDate, sympathyAndModifyItem) {
-        return `
+    function postItem(id, title, content, createdDate, sympathyAndModifyItem, comments) {
+        let item = `
             <!--post 제목-->
             <div class="row"><div class="col-xxl-9 align-self-center main-blank-110 align-self-center"></div></div>
             <div class="row">
@@ -584,14 +584,18 @@
 
                         <div class="main-blank-10"></div>
                         <!--작성된 댓글 부분-->
-                        <div id="comment-list-`+id+`">
-
-                        </div>
+                        <div id="comment-list-`+id+`">`;
+        comments.forEach(comment => {
+                item += commentItem(comment.author, comment.content, comment.createdId, comment.id)
+        });
+           item += `</div>
                         <!--작성된 댓글 부분-->
                     </div>
                 </div>
             </div>
             `;
+
+        return item;
     }
 
     // 공감 수정 버튼 템플릿 리턴

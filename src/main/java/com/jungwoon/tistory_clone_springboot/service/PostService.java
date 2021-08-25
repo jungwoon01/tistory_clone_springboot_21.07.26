@@ -5,14 +5,14 @@ import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
 import com.jungwoon.tistory_clone_springboot.domain.blog.BlogRepository;
 import com.jungwoon.tistory_clone_springboot.domain.category.Category;
 import com.jungwoon.tistory_clone_springboot.domain.category.CategoryRepository;
+import com.jungwoon.tistory_clone_springboot.domain.comment.Comment;
+import com.jungwoon.tistory_clone_springboot.domain.comment.CommentRepository;
 import com.jungwoon.tistory_clone_springboot.domain.post.Post;
 import com.jungwoon.tistory_clone_springboot.domain.post.PostRepository;
 import com.jungwoon.tistory_clone_springboot.domain.user.User;
 import com.jungwoon.tistory_clone_springboot.domain.user.UserRepository;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomApiException;
 import com.jungwoon.tistory_clone_springboot.handler.exception.CustomException;
-import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogSidebarRespDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.category.CategoryAndPostCountRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.comment.CommentRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.*;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +33,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final BlogRepository blogRepository;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
     private final EntityManager em; // 모든 Repository 는 EntityManager 를 구현해서 만들어 있는 구현체
 
     // post 작성 서비스
@@ -63,36 +64,6 @@ public class PostService {
 
         postRepository.save(postCreateRequestDto.toEntity(categoryEntity, userEntity, blogEntity));
         System.out.println("카테고리 있는 서비스 끝");
-    }
-
-
-    // 글 목록 가져오기
-    @Transactional(readOnly = true)
-    public List<PostRespDto> posts(String url) {
-
-        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
-            throw new CustomException("현재 주소의 블로그를 찾을 수 없습니다.");
-        });
-
-        List<Post> posts = blogEntity.getPosts();
-
-        List<PostRespDto> postRespDtos = new ArrayList<>();
-
-        posts.forEach(post -> {
-            postRespDtos.add(PostRespDto.builder()
-                    .id(post.getId())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .category(post.getCategory() == null ? "카테고리 없음" : post.getCategory().getName())
-                    .security(post.getSecurity())
-                    .userNickname(post.getUser().getNickname())
-                    .createdDate(post.getCreatedDate())
-                    .modifiedDate(post.getModifiedDate())
-                    .build()
-            );
-        });
-
-        return postRespDtos;
     }
 
     @Transactional
@@ -158,7 +129,8 @@ public class PostService {
 
     // 블로그에 대한 글 리스트 리턴
     @Transactional(readOnly = true)
-    public List<PostAndLikesRespDto> posts(String url, HttpSession httpSession) {
+    public List<PostAndLikesAndCommentRespDto> posts(String url, HttpSession httpSession) {
+        List<PostAndLikesAndCommentRespDto> respDtos = new ArrayList<>();
 
         // 쿼리 준비
         StringBuffer sb = new StringBuffer();
@@ -186,23 +158,74 @@ public class PostService {
 
         // 쿼리 실행(qlrm 라이브러리 필요 - Dto 에 DB 결과를 매핑하기 위해서)
         JpaResultMapper resultMapper = new JpaResultMapper();
-        List<PostAndLikesRespDto> postAndLikesRespDtos = resultMapper.list(query, PostAndLikesRespDto.class);
+        List<PostAndLikesDto> dtos = resultMapper.list(query, PostAndLikesDto.class);
 
-        return postAndLikesRespDtos;
+        // 댓글 set
+        dtos.forEach(post -> {
+            respDtos.add(new PostAndLikesAndCommentRespDto(post, getCommentsRespDtoInPost(post)));
+        });
+
+        return respDtos;
+    }
+
+    // 블로그에 대한 선택된 카테고리의 글 리스트 리턴
+    @Transactional(readOnly = true)
+    public List<PostAndLikesAndCommentRespDto> posts(String url, HttpSession httpSession, String category) {
+        List<PostAndLikesAndCommentRespDto> respDtos = new ArrayList<>();
+
+        // 쿼리 준비
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT p.*, ");
+        sb.append("(SELECT EXISTS (SELECT * FROM likes WHERE postId = p.id AND userId = ?)) AS isLikes, ");
+        sb.append("(SELECT COUNT(*) FROM likes WHERE postId = p.id) AS likesCount ");
+        sb.append("FROM post p ");
+        sb.append("WHERE p.security = '공개' ");
+        sb.append("AND p.categoryId = (SELECT id FROM category WHERE name = ? AND blogId = (SELECT id FROM blog WHERE url = ?)) ");
+        sb.append("ORDER BY p.createdDate DESC");
+
+        // 물음표
+        // 1. : userId
+        // 2. : category
+        // 3. : url
+
+        // 로그인한 유저의 id값 가져오기
+        Long userId = 0L;
+        if(httpSession.getAttribute("principal") != null) {
+            userId = ((PrincipalDetails)httpSession.getAttribute("principal")).getUser().getId();
+        }
+
+        // 쿼리 완성
+        Query query = em.createNativeQuery(sb.toString())
+                .setParameter(1, userId)
+                .setParameter(2, category)
+                .setParameter(3, url);
+
+        // 쿼리 실행(qlrm 라이브러리 필요 - Dto 에 DB 결과를 매핑하기 위해서)
+        JpaResultMapper resultMapper = new JpaResultMapper();
+        List<PostAndLikesDto> dtos = resultMapper.list(query, PostAndLikesDto.class);
+
+        // 댓글 set
+        dtos.forEach(post -> {
+            respDtos.add(new PostAndLikesAndCommentRespDto(post, getCommentsRespDtoInPost(post)));
+        });
+
+        return respDtos;
     }
 
     // 글에 대한 댓글 리스트 리턴
-    private List<CommentRespDto> getCommentsRespDtoInPost(Post post) {
+    private List<CommentRespDto> getCommentsRespDtoInPost(PostAndLikesDto dtos) {
         List<CommentRespDto> commentRespDtos = new ArrayList<>();
 
-        post.getComments().forEach(comment -> {
+        List<Comment> commentEntities = commentRepository.getAllByPostId(dtos.getId().longValue());
+
+        commentEntities.forEach(commentEntity -> {
             commentRespDtos.add(CommentRespDto.builder()
-                    .id(comment.getId())
-                    .author(comment.getAuthor())
-                    .content(comment.getContent())
-                    .postId(comment.getPost().getId())
-                    .createdDate(comment.getCreatedDate())
-                    .modifiedDate(comment.getModifiedDate())
+                    .id(commentEntity.getId())
+                    .modifiedDate(commentEntity.getModifiedDate())
+                    .createdDate(commentEntity.getCreatedDate())
+                    .postId(commentEntity.getPost().getId())
+                    .content(commentEntity.getContent())
+                    .author(commentEntity.getAuthor())
                     .build());
         });
 

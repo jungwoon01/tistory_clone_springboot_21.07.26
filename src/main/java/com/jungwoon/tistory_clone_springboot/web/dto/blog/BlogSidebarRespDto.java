@@ -1,8 +1,6 @@
 package com.jungwoon.tistory_clone_springboot.web.dto.blog;
 
 import com.jungwoon.tistory_clone_springboot.web.dto.category.CategoryAndPostCountRespDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.post.PostAndCommentRespDto;
-import com.jungwoon.tistory_clone_springboot.web.dto.post.PostRespDto;
 import lombok.Builder;
 import lombok.Data;
 

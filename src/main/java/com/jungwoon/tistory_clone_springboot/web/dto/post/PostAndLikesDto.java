@@ -8,14 +8,12 @@ import lombok.NoArgsConstructor;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Data
-public class PostAndLikesRespDto {
+public class PostAndLikesDto {
     private BigInteger id;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
@@ -27,16 +25,4 @@ public class PostAndLikesRespDto {
     private BigInteger userId;
     private Integer isLikes;
     private BigInteger likesCount;
-
-    public boolean getIsLikes() {
-        return this.isLikes == 1;
-    }
-
-    public String getCreatedDate() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(this.createdDate);
-    }
-
-    public String getModifiedDate() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(this.modifiedDate);
-    }
 }
