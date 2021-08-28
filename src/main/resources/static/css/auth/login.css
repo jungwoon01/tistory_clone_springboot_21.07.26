@@ -1,0 +1,36 @@
+a:link { text-decoration: none;}
+a:visited { text-decoration: none;}
+
+.kakao-login {
+    background-color: #FFEB34;
+    color: #3A1D1D;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.kakao-login:hover {
+    color: #3A1D1D;
+    text-decoration: none;
+}
+
+.naver-login {
+    background-color: #2DB400;
+    color: #FFFFFF;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.naver-login:hover {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.google-login {
+    background-color: #FFFFFF;
+    color: #000000;
+    border-radius: 5px;
+    text-decoration: none;
+    border: 1px solid #CCCCCC;
+}
+.google-login:hover {
+    color: #000000;
+    text-decoration: none;
+}
