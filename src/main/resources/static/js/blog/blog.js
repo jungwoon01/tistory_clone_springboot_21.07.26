@@ -2,6 +2,16 @@ let commentTemp;
 let updatingId;
 let isUpdating = false;
 
+const nowUrl = new URL(window.location.href); // 현재 페이지의 url
+const nowUrlParams = nowUrl.searchParams; // url 의 파라미터
+
+let nowPage = 0;
+
+// 현재 페이지 가져오기
+if(nowUrlParams.get('page')) {
+    nowPage = Number(nowUrlParams.get('page'));
+}
+
 /**
  * 페이지 초기화를 위한 것들
  * */
@@ -10,7 +20,7 @@ let isUpdating = false;
 $(function () {
     $.ajax({
         type: "get",
-        url: '/api/posts/'+blogUrl+'/'+category,
+        url: '/api/posts/'+blogUrl+'/'+category+`?page=`+page,
         dataType: "json"
     }).done(res => {
         let data = res.data;
@@ -20,7 +30,7 @@ $(function () {
             $('#post-list').append(postItem(post.id, post.title, post.content, post.createdDate, sympathyAndModifyItem(post.isLikes, post.likesCount, isHost, post.id), post.comments));
         })
 
-        if(date.length == 0) {
+        if(data.length == 0) {
             $('#post-title-item').append(emptyPostTitleItem());
         }
 

@@ -72,10 +72,23 @@
         <div id="post-list">
 
         </div>
+
+        <div style="height: 64px;"></div>
+
+        <!--페이징 버튼-->
+        <div class="row">
+            <div class="col-xxl-9 align-self-center">
+                <ul id="paging-btn" class="pagination justify-content-center">
+
+                </ul>
+            </div>
+        </div>
     </div>
 
     <div style="height: 300px;"></div>
 </main>
+
+<!--페이징 버튼 끝-->
 
 <!-- 댓글 삭제 Modal -->
 <div class="modal fade" id="modal-delete-comment" tabindex="-1" aria-hidden="true">
@@ -103,5 +116,22 @@
     let category = `{{category}}`;
 </script>
 <script src="/js/blog/blog.js"></script>
+
+<!--페이징 처리를 위한 js-->
+<script>
+    let thisUrl = window.location.href; // 현재 페이지의 url
+    let urlArr = thisUrl.split('/');
+
+    let pagingUrl;
+    if(category == '전체 글'){
+        pagingUrl = `?page=`;
+    }else {
+        let categoryId = Number(urlArr[urlArr.length - 1]); // category Id
+        pagingUrl = `/category/`+categoryId+`?page=`;
+    }
+
+    let postCount = {{postCount}};
+</script>
+<script src="/js/paging.js"></script>
 
 {{>layout/blog/blog-footer}}

@@ -1,6 +1,9 @@
 package com.jungwoon.tistory_clone_springboot.domain.post;
 
 import com.jungwoon.tistory_clone_springboot.domain.blog.Blog;
+import com.jungwoon.tistory_clone_springboot.domain.category.Category;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,7 +28,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                     "WHERE blogId = (SELECT id FROM blog WHERE url = :url) " +
                     "ORDER BY createdDate DESC",
             nativeQuery = true)
-    List<Post> mFindAllByBlogUrl(String url);
+    Page<Post> mFindAllByBlogUrl(String url, Pageable pageable);
 
     Post findByIdAndBlog(Long id, Blog blog);
+
+    Integer countAllByBlog(Blog blog);
+
+    Integer countAllByBlogAndCategory(Blog blogEntity, Category categoryEntity);
 }

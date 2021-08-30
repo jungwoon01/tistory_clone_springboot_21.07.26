@@ -15,6 +15,8 @@ import com.jungwoon.tistory_clone_springboot.web.dto.post.PostRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.user.UserBlogCountDto;
 import lombok.RequiredArgsConstructor;
 import org.qlrm.mapper.JpaResultMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,14 +106,14 @@ public class BlogService {
 
     // 블로그와 그 블로그의 글 목록 가져오기
     @Transactional(readOnly = true)
-    public BlogAndPostsRespDto blogAndPosts(String url) {
+    public BlogAndPostsRespDto blogAndPosts(String url, Pageable pageable) {
         Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
             throw new CustomException("현재 주소의 블로그를 찾을 수 없습니다.");
         });
 
         List<PostRespDto> postRespDtos = new ArrayList<>();
 
-        List<Post> posts = postRepository.mFindAllByBlogUrl(url);
+        Page<Post> posts = postRepository.mFindAllByBlogUrl(url, pageable);
         
         posts.forEach(post -> {
             postRespDtos.add(PostRespDto.builder()

@@ -8,6 +8,8 @@ import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogAndPostsRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.blog.BlogSidebarRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostRespDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,11 +28,13 @@ public class BlogController {
 
     // 블로그 글 관리 페이지
     @GetMapping("/{url}/manage/post")
-    public String blogManage(@PathVariable String url, Model model) {
+    public String blogManage(@PathVariable String url, Model model, @PageableDefault(size = 10) Pageable pageable) {
 
-        BlogAndPostsRespDto dto = blogService.blogAndPosts(url);
+        BlogAndPostsRespDto dto = blogService.blogAndPosts(url, pageable);
+        Integer postCount = postService.allPostCount(url);
 
         model.addAttribute("blog", dto);
+        model.addAttribute("postCount", postCount);
 
         return "blog/manage-post";
     }
@@ -73,9 +77,11 @@ public class BlogController {
     public String blog(@PathVariable String url, Model model) {
 
         BlogSidebarRespDto blogAndCategoryRespDto = blogService.blogSidebar(url, httpSession);
+        Integer postCount = postService.allPostCount(url);
 
         model.addAttribute("blog", blogAndCategoryRespDto);
         model.addAttribute("category", "전체 글");
+        model.addAttribute("postCount", postCount);
 
         return "blog/blog";
     }
@@ -86,9 +92,11 @@ public class BlogController {
 
         BlogSidebarRespDto blogAndCategoryRespDto = blogService.blogSidebar(url, httpSession);
         String categoryName = categoryService.categoryName(categoryId);
+        Integer postCount = postService.categoryPostCount(url, categoryId);
 
         model.addAttribute("blog", blogAndCategoryRespDto);
         model.addAttribute("category", categoryName);
+        model.addAttribute("postCount", postCount);
 
         return "blog/blog";
     }

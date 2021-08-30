@@ -17,6 +17,7 @@ import com.jungwoon.tistory_clone_springboot.web.dto.comment.CommentRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.*;
 import lombok.RequiredArgsConstructor;
 import org.qlrm.mapper.JpaResultMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -129,7 +130,7 @@ public class PostService {
 
     // 블로그에 대한 글 리스트 리턴
     @Transactional(readOnly = true)
-    public List<PostAndLikesAndCommentRespDto> posts(String url, HttpSession httpSession) {
+    public List<PostAndLikesAndCommentRespDto> posts(String url, HttpSession httpSession, Pageable pageable) {
         List<PostAndLikesAndCommentRespDto> respDtos = new ArrayList<>();
 
         // 쿼리 준비
@@ -140,11 +141,14 @@ public class PostService {
         sb.append("FROM post p ");
         sb.append("WHERE p.blogId = (SELECT id FROM blog WHERE url=?) ");
         sb.append("AND p.security = '공개' ");
-        sb.append("ORDER BY p.createdDate DESC");
+        sb.append("ORDER BY p.createdDate DESC ");
+        sb.append("LIMIT ? OFFSET ?");
 
         // 물음표
         // 1. : userId
         // 2. : url
+        // 3. : size
+        // 4. : offset
 
         Long userId = 0L;
         if(httpSession.getAttribute("principal") != null) {
@@ -154,7 +158,9 @@ public class PostService {
         // 쿼리 완성
         Query query = em.createNativeQuery(sb.toString())
                 .setParameter(1, userId)
-                .setParameter(2, url);
+                .setParameter(2, url)
+                .setParameter(3, pageable.getPageSize())
+                .setParameter(4, pageable.getOffset());
 
         // 쿼리 실행(qlrm 라이브러리 필요 - Dto 에 DB 결과를 매핑하기 위해서)
         JpaResultMapper resultMapper = new JpaResultMapper();
@@ -170,7 +176,7 @@ public class PostService {
 
     // 블로그에 대한 선택된 카테고리의 글 리스트 리턴
     @Transactional(readOnly = true)
-    public List<PostAndLikesAndCommentRespDto> posts(String url, HttpSession httpSession, String category) {
+    public List<PostAndLikesAndCommentRespDto> posts(String url, HttpSession httpSession, String category, Pageable pageable) {
         List<PostAndLikesAndCommentRespDto> respDtos = new ArrayList<>();
 
         // 쿼리 준비
@@ -181,12 +187,15 @@ public class PostService {
         sb.append("FROM post p ");
         sb.append("WHERE p.security = '공개' ");
         sb.append("AND p.categoryId = (SELECT id FROM category WHERE name = ? AND blogId = (SELECT id FROM blog WHERE url = ?)) ");
-        sb.append("ORDER BY p.createdDate DESC");
+        sb.append("ORDER BY p.createdDate DESC ");
+        sb.append("LIMIT ? OFFSET ?");
 
         // 물음표
         // 1. : userId
         // 2. : category
         // 3. : url
+        // 4. : size
+        // 5. : offset
 
         // 로그인한 유저의 id값 가져오기
         Long userId = 0L;
@@ -198,7 +207,9 @@ public class PostService {
         Query query = em.createNativeQuery(sb.toString())
                 .setParameter(1, userId)
                 .setParameter(2, category)
-                .setParameter(3, url);
+                .setParameter(3, url)
+                .setParameter(4, pageable.getPageSize())
+                .setParameter(5, pageable.getOffset());
 
         // 쿼리 실행(qlrm 라이브러리 필요 - Dto 에 DB 결과를 매핑하기 위해서)
         JpaResultMapper resultMapper = new JpaResultMapper();
@@ -230,5 +241,27 @@ public class PostService {
         });
 
         return commentRespDtos;
+    }
+
+    @Transactional(readOnly = true)
+    public Integer allPostCount(String url) {
+        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
+            throw new CustomException("존재하지 않는 블로그 입니다.");
+        });
+
+        return postRepository.countAllByBlog(blogEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public Integer categoryPostCount(String url, Long categoryId) {
+        Blog blogEntity = blogRepository.findByUrl(url).orElseThrow(() -> {
+            throw new CustomException("존재하지 않는 블로그 입니다.");
+        });
+
+        Category categoryEntity = categoryRepository.findById(categoryId).orElseThrow(() -> {
+            throw new CustomException("존재하지 않는 블로그 입니다.");
+        });
+
+        return postRepository.countAllByBlogAndCategory(blogEntity, categoryEntity);
     }
 }

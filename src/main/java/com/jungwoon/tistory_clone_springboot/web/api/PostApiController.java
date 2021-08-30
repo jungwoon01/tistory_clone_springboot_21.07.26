@@ -5,6 +5,8 @@ import com.jungwoon.tistory_clone_springboot.web.dto.CMResponseDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostAndLikesAndCommentRespDto;
 import com.jungwoon.tistory_clone_springboot.web.dto.post.PostAndLikesDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,14 +24,14 @@ public class PostApiController {
     private final HttpSession httpSession;
 
     @GetMapping("/api/posts/{url}/{category}")
-    public ResponseEntity<?> posts(@PathVariable String category, @PathVariable String url) {
+    public ResponseEntity<?> posts(@PathVariable String category, @PathVariable String url, @PageableDefault(size = 10) Pageable pageable) {
 
         List<PostAndLikesAndCommentRespDto> postAndLikesDtos;
 
         if(category.equals("전체 글"))
-            postAndLikesDtos = postService.posts(url, httpSession);
+            postAndLikesDtos = postService.posts(url, httpSession, pageable);
         else
-            postAndLikesDtos = postService.posts(url, httpSession, category);
+            postAndLikesDtos = postService.posts(url, httpSession, category, pageable);
 
         return new ResponseEntity<> (new CMResponseDto<>(1, "글 목록 가져오기 성공", postAndLikesDtos), HttpStatus.OK);
     }

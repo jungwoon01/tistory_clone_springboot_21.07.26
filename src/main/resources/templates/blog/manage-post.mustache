@@ -49,6 +49,13 @@
     </div>
 </div>
 
+<!--페이징 버튼-->
+<div class="row">
+    <ul id="paging-btn" class="pagination justify-content-center">
+
+    </ul>
+</div>
+<!--페이징 버튼 끝-->
 
 <!-- 삭제 확인 Modal -->
 <div class="modal fade" id="delete-post-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -161,5 +168,13 @@
         });
     }
 </script>
+
+<!--페이징 처리를 위한 js-->
+<script>
+    let blogUrl = `{{blog.url}}`;
+    let postCount = {{postCount}};
+    let pagingUrl = '/manage/post?page=';
+</script>
+<script src="/js/paging.js"></script>
 
 {{>layout/footer}}
