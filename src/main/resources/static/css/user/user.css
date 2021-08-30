@@ -1,0 +1,40 @@
+body {
+    background-color: #f3f5f7;
+}
+a {
+    text-decoration: none;
+}
+.info {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.side-menu-list {
+    padding: 10px 15px;
+    border-bottom: #f3f5f7 solid 1px;
+}
+.side-menu-list-last {
+    padding: 10px 15px;
+}
+.orange {
+    color: #FF5010;
+    text-decoration: none;
+}
+.orange:hover {
+    color: #FF5010;
+}
+.side-menu-title {
+    font-size: 12pt;
+}
+.side-menu-content {
+    padding-top: 2px;
+    padding-left: 1px;
+    font-size: 10pt;
+    color: #5a5a5a;
+}
+.title-dec {
+    text-decoration: none;
+}
+.title-dec:hover {
+    background-color: #E3E5E7;
+}

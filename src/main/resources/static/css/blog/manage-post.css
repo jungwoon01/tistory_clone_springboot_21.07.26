@@ -1,0 +1,13 @@
+.post-btns {
+    background-color: white;
+    font-size: 10pt;
+    border: 1px solid #636464;
+    padding: 4px 10px;
+    margin-left: 10px;
+    visibility: hidden;
+}
+.post-btns:hover {
+    border:1px solid #1c1f23;
+    background-color: #636464;
+    color: white;
+}

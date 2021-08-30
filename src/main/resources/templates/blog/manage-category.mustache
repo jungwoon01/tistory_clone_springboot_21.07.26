@@ -1,45 +1,9 @@
+{{>layout/header}}
+<link href="/css/blog/manage.css" rel="stylesheet">
+<link href="/css/blog/manage-category.css" rel="stylesheet">
+{{>layout/title}}
+{{>layout/header-nav}}
 {{>layout/manage/manage-top}}
-
-<style>
-    .category-title-border {
-        border: 1px solid #DDDDDD;
-    }
-    .category-title-border:hover {
-        border: 1px solid #BBBBBB;
-    }
-    .category-border{
-        border: 1px solid #DDDDDD;
-        border-top: 1px solid white;
-    }
-    .category-border:hover {
-        border: 1px solid #BBBBBB;
-        border-top: 1px solid #DDDDDD;
-    }
-    .btn-category {
-        background-color: white;
-        font-size: 9pt;
-        border: 1px solid #636464;
-        padding: 2px 6px;
-        margin-left: 10px;
-        visibility: hidden;
-    }
-    .btn-category:hover {
-        border:1px solid #1c1f23;
-        background-color: #636464;
-        color: white;
-    }
-    .category-add:hover {
-        color: black;
-    }
-    .btn-category-disabled {
-        background-color: white;
-        font-size: 9pt;
-        border: 1px solid #E3E5E7;
-        padding: 2px 6px;
-        margin-left: 10px;
-        visibility: hidden;
-    }
-</style>
 
 <div class="row">
     <div class="col-12">
@@ -96,10 +60,14 @@
     </div>
 </div>
 
+{{>layout/manage/manage-bottom}}
+
 <script>
-    let itemList = new List(); // 템플릿 적용 카테고리 리스트
+    let blogUrl = `{{blog.url}}`;
     let categoryList = new List(); // 카테고리 인스턴스 리스트
     let beforeCategoryList = new List(); // 변경전 카테고리 리스트
+
+    let itemList = new List(); // 템플릿 적용 카테고리 리스트
     let inputFlag = false; // 카테고리 인풋을 사용중인지
     let changedItemIdSet = new Set();
 
@@ -119,6 +87,8 @@
 
         drawTemplateList();
     });
+
+
 
     // 카테고리 정렬
     function categoryListSort() {
@@ -301,7 +271,7 @@
      * 버튼 클릭 메서드들
      * */
 
-    // 카테고리 input 생성/제거
+// 카테고리 input 생성/제거
     function controlCategoryInput() {
         if(inputFlag) {
             itemList.remove(itemList.get(itemList.length() - 1));
@@ -342,13 +312,13 @@
 
         $.ajax({
             type:"post",
-            url:`/{{blog.url}}/manage/category/save`,
+            url:`/`+blogUrl+`/manage/category/save`,
             data: json,
             contentType:"application/json; charset=utf-8",
             dataType:"json"
         }).done(res=>{
             console.log(res);
-            window.location.href='/{{blog.url}}/manage/category';
+            window.location.href=`/`+blogUrl+`/manage/category`;
         }).fail(error=>{
             console.log(error);
         });
@@ -464,7 +434,7 @@
      * 폼 리턴 메서드
      * */
 
-    // 카테고리 인풋 폼
+// 카테고리 인풋 폼
     function categoryInput() {
         let input = `<div class="category-border" style="padding-left: 30px; background-color: #f3f5f7;">
                         <div style="background-color: white; border-left: 1px solid #DDDDDD;">
@@ -659,4 +629,4 @@
 
 </script>
 
-{{>layout/manage/manage-bottom}}
+{{>layout/footer}}

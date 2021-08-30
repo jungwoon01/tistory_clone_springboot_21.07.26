@@ -1,0 +1,38 @@
+.category-title-border {
+    border: 1px solid #DDDDDD;
+}
+.category-title-border:hover {
+    border: 1px solid #BBBBBB;
+}
+.category-border{
+    border: 1px solid #DDDDDD;
+    border-top: 1px solid white;
+}
+.category-border:hover {
+    border: 1px solid #BBBBBB;
+    border-top: 1px solid #DDDDDD;
+}
+.btn-category {
+    background-color: white;
+    font-size: 9pt;
+    border: 1px solid #636464;
+    padding: 2px 6px;
+    margin-left: 10px;
+    visibility: hidden;
+}
+.btn-category:hover {
+    border:1px solid #1c1f23;
+    background-color: #636464;
+    color: white;
+}
+.category-add:hover {
+    color: black;
+}
+.btn-category-disabled {
+    background-color: white;
+    font-size: 9pt;
+    border: 1px solid #E3E5E7;
+    padding: 2px 6px;
+    margin-left: 10px;
+    visibility: hidden;
+}

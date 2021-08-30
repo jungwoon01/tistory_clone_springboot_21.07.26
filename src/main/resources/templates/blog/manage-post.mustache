@@ -1,20 +1,9 @@
+{{>layout/header}}
+<link href="/css/blog/manage.css" rel="stylesheet">
+<link href="/css/blog/manage-post.css" rel="stylesheet">
+{{>layout/title}}
+{{>layout/header-nav}}
 {{>layout/manage/manage-top}}
-
-<style>
-    .post-btns {
-        background-color: white;
-        font-size: 10pt;
-        border: 1px solid #636464;
-        padding: 4px 10px;
-        margin-left: 10px;
-        visibility: hidden;
-    }
-    .post-btns:hover {
-        border:1px solid #1c1f23;
-        background-color: #636464;
-        color: white;
-    }
-</style>
 
 <div class="row justify-content-center">
     <div class="col-12">
@@ -81,21 +70,24 @@
     </div>
 </div>
 
+
+{{>layout/manage/manage-bottom}}
+
 <script>
 
-// 카테고리 템플릿 마우스 올림/내림 이벤트 정의
+    // 카테고리 템플릿 마우스 올림/내림 이벤트 정의
     $(function (){
         {{#blog.posts}}
-        $('#post-item-'+{{id}}).mouseover(() => {
-            $("#post-item-btn-security-"+{{id}}).css("visibility", "visible");
-            $("#post-item-btn-modify-"+{{id}}).css("visibility", "visible");
-            $("#post-item-btn-delete-"+{{id}}).css("visibility", "visible");
-        });
-        $('#post-item-'+{{id}}).mouseleave(() => {
-            $("#post-item-btn-security-"+{{id}}).css("visibility", "hidden");
-            $("#post-item-btn-modify-"+{{id}}).css("visibility", "hidden");
-            $("#post-item-btn-delete-"+{{id}}).css("visibility", "hidden");
-        });
+            $('#post-item-'+{{id}}).mouseover(() => {
+                $("#post-item-btn-security-"+{{id}}).css("visibility", "visible");
+                $("#post-item-btn-modify-"+{{id}}).css("visibility", "visible");
+                $("#post-item-btn-delete-"+{{id}}).css("visibility", "visible");
+            });
+            $('#post-item-'+{{id}}).mouseleave(() => {
+                $("#post-item-btn-security-"+{{id}}).css("visibility", "hidden");
+                $("#post-item-btn-modify-"+{{id}}).css("visibility", "hidden");
+                $("#post-item-btn-delete-"+{{id}}).css("visibility", "hidden");
+            });
         {{/blog.posts}}
     });
 
@@ -170,4 +162,4 @@
     }
 </script>
 
-{{>layout/manage/manage-bottom}}
+{{>layout/footer}}
