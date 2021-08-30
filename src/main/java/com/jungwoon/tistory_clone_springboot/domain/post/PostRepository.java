@@ -22,7 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value =
             "SELECT * " +
                     "FROM post " +
-                    "WHERE blogId = (SELECT id FROM blog WHERE url = :url) AND security = '공개'" +
+                    "WHERE blogId = (SELECT id FROM blog WHERE url = :url) " +
                     "ORDER BY createdDate DESC",
             nativeQuery = true)
     List<Post> mFindAllByBlogUrl(String url);
