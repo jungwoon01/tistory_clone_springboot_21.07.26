@@ -30,7 +30,7 @@
             <div id="post-item-{{id}}" style="padding: 22px; background-color: white; border-top: 1px solid #DDDDDD;">
                 <div class="row align-content-center">
                     <div class="col-8">
-                        <a href="#" style="margin-bottom: 4px; padding-bottom: 0; color: #2c3034; font-size: 13pt;">{{title}}</a>
+                        <a href="" id="post-item-title-{{id}}" style="margin-bottom: 4px; padding-bottom: 0; color: #2c3034; font-size: 13pt;">{{title}}</a>
                         <div>
                             <a style="font-size: 10pt; color: #FF5010; margin: 0 18px 0 0; padding: 0; display: inline;">{{category}}</a>
                             <p style="font-size: 10pt; color: #888888; margin: 0 18px 0 0; padding: 0; display: inline;">{{userNickname}}</p>
@@ -80,9 +80,17 @@
 
 {{>layout/manage/manage-bottom}}
 
+<!--페이징 처리를 위한 js-->
+<script>
+    let blogUrl = `{{blog.url}}`;
+    let postCount = {{postCount}};
+    let pagingUrl = '/manage/post?page=';
+</script>
+<script src="/js/paging.js"></script>
+
 <script>
 
-    // 카테고리 템플릿 마우스 올림/내림 이벤트 정의
+    // 카테고리 템플릿 마우스 올림/내림 이벤트 정의, herf 추가
     $(function (){
         {{#blog.posts}}
             $('#post-item-'+{{id}}).mouseover(() => {
@@ -95,6 +103,8 @@
                 $("#post-item-btn-modify-"+{{id}}).css("visibility", "hidden");
                 $("#post-item-btn-delete-"+{{id}}).css("visibility", "hidden");
             });
+
+            $("#post-item-title-{{id}}").attr("href", "/{{blog.url}}?page="+page+"#post-item-top-{{id}}");
         {{/blog.posts}}
     });
 
@@ -168,13 +178,5 @@
         });
     }
 </script>
-
-<!--페이징 처리를 위한 js-->
-<script>
-    let blogUrl = `{{blog.url}}`;
-    let postCount = {{postCount}};
-    let pagingUrl = '/manage/post?page=';
-</script>
-<script src="/js/paging.js"></script>
 
 {{>layout/footer}}

@@ -26,7 +26,7 @@ $(function () {
         let data = res.data;
 
         data.forEach(post => {
-            $('#post-title-list').append(postTitleItem(post.title, post.createdDate));
+            $('#post-title-list').append(postTitleItem(post.id, post.title, post.createdDate));
             $('#post-list').append(postItem(post.id, post.title, post.content, post.createdDate, sympathyAndModifyItem(post.isLikes, post.likesCount, isHost, post.id), post.comments));
         })
 
@@ -34,6 +34,7 @@ $(function () {
             $('#post-title-item').append(emptyPostTitleItem());
         }
 
+        moveOffset();
     }).fail(error => {
         alert(error.message);
     });
@@ -296,7 +297,7 @@ function commentUpdateTemplate(author, content, createdDate, commentId) {
 function postItem(id, title, content, createdDate, sympathyAndModifyItem, comments) {
     let item = `
             <!--post 제목-->
-            <div class="row"><div class="col-xxl-9 align-self-center main-blank-110 align-self-center"></div></div>
+            <div class="row" id="post-item-top-`+id+`"><div class="col-xxl-9 align-self-center main-blank-110 align-self-center"></div></div>
             <div class="row">
                 <div class="col-xxl-9 align-self-center "><h5 class="text-center"><span class="blog-main-title">` + title + `</span></h5></div>
             </div>
@@ -424,12 +425,12 @@ function fullHeart(postId) {
 }
 
 // 글 제목 item 리턴
-function postTitleItem(title, createdDate) {
+function postTitleItem(id, title, createdDate) {
     return `
             <div class="row">
                 <div class="col-xxl-12 align-self-center">
                     <div class="post-item">
-                        <a href="#" class="post-item-title">`+title+`</a><span class="float-end post-item-date">`+createdDate+`</span>
+                        <a href="#post-item-top-`+id+`" class="post-item-title">`+title+`</a><span class="float-end post-item-date">`+createdDate+`</span>
                     </div>
                 </div>
             </div>`;
@@ -473,4 +474,17 @@ function commentUpdatePWInputEvent() {
         $('#update-comment-description').text("");
     });
 }
+
+// 글 content 로 이동
+function moveOffset() {
+    if(!nowUrl.href.includes('#')) return;
+
+    let urlSplit = nowUrl.href.split('#');
+    let contentId = urlSplit[urlSplit.length - 1];
+
+    var offset = $("#"+contentId).offset();
+    $('html, body').animate({scrollTop : offset.top}, 300);
+}
+
+
 
