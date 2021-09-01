@@ -1,0 +1,25 @@
+body {
+    padding-top: 0;
+}
+
+.carousel-bg {
+    height: 600px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+.carousel-bg-img1 {
+    background-image: url("/images/tistory_carousel1.png");
+}
+.carousel-bg-img2 {
+    background-image: url("/images/tistory_carousel2.png");
+}
+.carousel-bg-img3 {
+    background-image: url("/images/tistory_carousel3.png");
+}
+
+.nav-bg{
+    background: none;
+    border-bottom: none;
+}

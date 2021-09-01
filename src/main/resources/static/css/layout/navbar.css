@@ -28,3 +28,7 @@
 body {
     padding-top: 80px;
 }
+
+.nav-bg {
+    background-color: white; border-bottom: 1px solid #CCCCCC;
+}
